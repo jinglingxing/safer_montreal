@@ -5,6 +5,7 @@ import numpy as np
 from uuid import uuid4
 import copy as cp
 from typing import List, Tuple
+import matplotlib.pyplot as plt
 
 Coordinates = Tuple[float, float]
 
@@ -55,13 +56,24 @@ class GridNode (Node):
         return (lat > self.lat - step and lat < self.lat + step and
                 lon > self.lon - step and lon < self.lon + step)
 
+    def node_plot(self, ax, color=None):
+        if not color:
+            color = 'b'
+        ax.plot((self.lat), (self.lon), 'o', markersize=1, color=color)
 
 
 if __name__ == "__main__":
-    a = Node(-73.62677804694519, 45.567779812980355)
-    b = Node(-73.62677804694519, 45.56777981298)
+    a = GridNode(-73.62677804694519, 45.567779812980355)
+    b = GridNode(-73.62677804694519, 45.56777981298)
     print(a.distance(b))
     a.add_neighbour(b)
     l = a.get_neighbours()
     l[1] = 1
     print(a.get_neighbours())
+
+    fig = plt.figure()
+    ax = fig.add_subplot()
+    ax.autoscale(True)
+    a.node_plot(ax)
+    plt.show()
+

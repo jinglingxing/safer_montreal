@@ -48,3 +48,7 @@ class GridGraph (Graph):
             if node.in_surrounding_zone(self.resolution, crime.lat, crime.long):
                 node.add_crime_occurrence(crime)
                 break # A crime belongs to only one Grid
+
+    def plot(self, ax, color=None):
+        for node in self._nodes.values():
+            node.node_plot(ax, color='b')

@@ -4,7 +4,7 @@ import sys
 sys.path.append('../')
 sys.path.append('../definitions/')
 import graph
-import node
+import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
     print(" running code ... ")
@@ -22,8 +22,6 @@ if __name__ == "__main__":
     # find extrema
     extrema = (crime_data['LONGITUDE'].min(), crime_data['LATITUDE'].min())
     minima = (crime_data['LONGITUDE'].max(), crime_data['LATITUDE'].max())
-    print('extrema', extrema)
-    print('minima', minima)
 
     # build grid
     x_min = extrema[1]  # latitude
@@ -40,15 +38,23 @@ if __name__ == "__main__":
     grid_graph = graph.GridGraph(resolution=resolution, minima=minima, extrema=extrema)
 
     # add node in grid graph
+    y_minimal = y_min
+
     while x_max > x_min:
+        lat = x_min + resolution / 2
+        x_min += resolution
         while y_max > y_min:
             # add centered node in each 0.002*0.002 small grid
-            lat = x_min + resolution / 2
             lon = y_min + resolution / 2
             grid_graph.add_node(lat, lon)
-            x_min += resolution
             y_min += resolution
+        y_min = y_minimal
 
+    fig = plt.figure()
+    ax = fig.add_subplot()
+    ax.autoscale(True)
+    grid_graph.plot(ax)
+    plt.show()
 
 
 
