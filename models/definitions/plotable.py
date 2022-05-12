@@ -42,7 +42,6 @@ class ColorPanel (object):
 
         return res
 
-        
 
 # Abstraction of the fact that most of our objects will be able to be ploted in a graph
 class Plotable (object):

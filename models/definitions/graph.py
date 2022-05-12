@@ -1,8 +1,8 @@
 from plotable import Plotable
 from crime import Crime
 from node import Node, GridNode, Coordinates
-from typing import Tuple
 import copy as cp
+
 
 class Graph (Plotable):
 
@@ -10,7 +10,7 @@ class Graph (Plotable):
         self._nodes = dict()
 
     def get_nodes(self):
-        cp.copy(self._nodes)
+        return cp.copy(self._nodes)
 
     def add_node(self, lat: float, lon: float):
         node = Node(lat, lon)
@@ -27,9 +27,12 @@ class Graph (Plotable):
 class GridGraph (Graph):
 
     def __init__(self, resolution: float, minima: Coordinates, extrema: Coordinates):
-        super.__init__()
+        super().__init__()
         self.resolution = resolution
 
+    def add_node(self, lat: float, lon: float):
+        node = GridNode(lat, lon)
+        self._nodes[node.id] = node
 
     def find_and_add_neighbours(self, node: GridNode):
         for _, cur_node in self._nodes:

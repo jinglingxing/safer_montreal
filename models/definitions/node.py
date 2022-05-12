@@ -8,15 +8,15 @@ from typing import List, Tuple
 
 Coordinates = Tuple[float, float]
 
-class Node (Plotable):
 
+class Node (Plotable):
     def __init__(self, lat: float, lon: float):
         self.id = str(uuid4())
         self.lat = lat
         self.lon = lon
         self.crimes = []
         self._weight = 0
-        self._neighbours = list()
+        self._neighbours = dict()
 
     def distance(self, other: Node) -> float:
         return np.sqrt((self.lat - other.lat)**2 + (self.lon - other.lon)**2)
@@ -40,6 +40,7 @@ class Node (Plotable):
     def __str__(self) -> str:
         return f"id: {self.id}, latitude: {self.lat}, longitude: {self.lon}, weight: {self.get_weight()}"
 
+
 class GridNode (Node):
 
     def get_surrounding_zone(self, resolution: float) -> List[Coordinates]:
@@ -55,9 +56,10 @@ class GridNode (Node):
                 lon > self.lon - step and lon < self.lon + step)
 
 
+
 if __name__ == "__main__":
-    a = Node(-73.62677804694519,45.567779812980355)
-    b = Node(-73.62677804694519,45.56777981298)
+    a = Node(-73.62677804694519, 45.567779812980355)
+    b = Node(-73.62677804694519, 45.56777981298)
     print(a.distance(b))
     a.add_neighbour(b)
     l = a.get_neighbours()
