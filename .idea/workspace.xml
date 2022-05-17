@@ -31,16 +31,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2f0fc5fb-a3ee-430b-a491-18fb05f15ee4" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/models/algorithm/a_star.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/definitions/crime.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/definitions/crime.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/definitions/graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/definitions/graph.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/definitions/node.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/definitions/node.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/features/grid_generation.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/features/grid_generation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/features/grid_generation.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/features/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -57,8 +65,8 @@
     <property name="TERMINAL_CUSTOM_COMMANDS_GOT_IT" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
-  <component name="RunManager" selected="Python.grid_generation">
-    <configuration name="grid_generation" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.main">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="safer_montreal" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -70,7 +78,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/models/features/grid_generation.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/models/features/main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -102,7 +110,7 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.grid_generation" />
+        <item itemvalue="Python.main" />
         <item itemvalue="Python.node" />
       </list>
     </recent_temporary>
@@ -137,22 +145,22 @@
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="648" y="280" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1920.1080@0.0.1920.1080" timestamp="1652235989272" />
-    <state width="1899" height="263" key="GridCell.Tab.0.bottom" timestamp="1652322189417">
+    <state width="1921" height="263" key="GridCell.Tab.0.bottom" timestamp="1652754052219">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1899" height="263" key="GridCell.Tab.0.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1652322189417" />
-    <state width="1899" height="263" key="GridCell.Tab.0.center" timestamp="1652322189415">
+    <state width="1921" height="263" key="GridCell.Tab.0.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1652754052219" />
+    <state width="1921" height="263" key="GridCell.Tab.0.center" timestamp="1652754052218">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1899" height="263" key="GridCell.Tab.0.center/0.0.1920.1080@0.0.1920.1080" timestamp="1652322189415" />
-    <state width="1899" height="263" key="GridCell.Tab.0.left" timestamp="1652322189414">
+    <state width="1921" height="263" key="GridCell.Tab.0.center/0.0.1920.1080@0.0.1920.1080" timestamp="1652754052218" />
+    <state width="1921" height="263" key="GridCell.Tab.0.left" timestamp="1652754052217">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1899" height="263" key="GridCell.Tab.0.left/0.0.1920.1080@0.0.1920.1080" timestamp="1652322189414" />
-    <state width="1899" height="263" key="GridCell.Tab.0.right" timestamp="1652322189416">
+    <state width="1921" height="263" key="GridCell.Tab.0.left/0.0.1920.1080@0.0.1920.1080" timestamp="1652754052217" />
+    <state width="1921" height="263" key="GridCell.Tab.0.right" timestamp="1652754052218">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1899" height="263" key="GridCell.Tab.0.right/0.0.1920.1080@0.0.1920.1080" timestamp="1652322189416" />
+    <state width="1921" height="263" key="GridCell.Tab.0.right/0.0.1920.1080@0.0.1920.1080" timestamp="1652754052218" />
     <state width="1899" height="364" key="GridCell.Tab.1.bottom" timestamp="1652321240232">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
@@ -169,5 +177,9 @@
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state width="1899" height="364" key="GridCell.Tab.1.right/0.0.1920.1080@0.0.1920.1080" timestamp="1652321240232" />
+    <state x="614" y="241" width="670" height="676" key="search.everywhere.popup" timestamp="1652753473999">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="614" y="241" width="670" height="676" key="search.everywhere.popup/0.0.1920.1080@0.0.1920.1080" timestamp="1652753473999" />
   </component>
 </project>

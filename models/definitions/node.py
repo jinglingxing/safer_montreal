@@ -29,11 +29,10 @@ class Node (Plotable):
         return cp.copy(self._neighbours)
 
     def get_weight(self):
-        if not self._weight:
-            for crime in self.crimes:
-                self._weight += crime.get_weight() 
-            
-        return self._weight
+        # if not self._weight:
+        #     for crime in self.crimes:
+        #         self._weight += crime.get_weight()
+        return len(self.crimes)
 
     def add_crime_occurrence(self, crime: Crime):
         self.crimes.append(crime)
@@ -59,7 +58,7 @@ class GridNode (Node):
     def node_plot(self, ax, color=None):
         if not color:
             color = 'b'
-        ax.plot((self.lat), (self.lon), 'o', markersize=1, color=color)
+        ax.plot((self.lon), (self.lat), 'o', markersize=1, color=color)
 
 
 if __name__ == "__main__":
@@ -70,7 +69,7 @@ if __name__ == "__main__":
     l = a.get_neighbours()
     l[1] = 1
     print(a.get_neighbours())
-
+    print(a.in_surrounding_zone(0.02, -73.62677804694519, 45.56677981298))
     fig = plt.figure()
     ax = fig.add_subplot()
     ax.autoscale(True)

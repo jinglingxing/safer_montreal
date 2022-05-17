@@ -4,6 +4,7 @@ import sys
 sys.path.append('../')
 sys.path.append('../definitions/')
 import graph
+from crime import Crime
 import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
@@ -34,7 +35,7 @@ if __name__ == "__main__":
           'x_min', x_min,
           'y_min', y_min)
 
-    resolution = 0.002
+    resolution = 0.02
     grid_graph = graph.GridGraph(resolution=resolution, minima=minima, extrema=extrema)
 
     # add node in grid graph
@@ -49,6 +50,16 @@ if __name__ == "__main__":
             grid_graph.add_node(lat, lon)
             y_min += resolution
         y_min = y_minimal
+
+    # ingestion of crimes into our Nodes object
+    for i in range(len(crime_data)):
+        crime = Crime(crime_data.iloc[i]['LONGITUDE'], crime_data.iloc[i]['LATITUDE'],
+                      crime_data.iloc[i]['CATEGORIE'], crime_data.iloc[i]['QUART'],
+                      crime_data.iloc[i]['CRIME_MONTH'], crime_data.iloc[i]['CRIME_YEAR'])
+        grid_graph.add_crime_occurrence(crime)
+
+    # create edges
+    grid_graph.create_edges()
 
     fig = plt.figure()
     ax = fig.add_subplot()
