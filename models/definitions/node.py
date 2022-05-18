@@ -17,13 +17,13 @@ class Node (Plotable):
         self.lon = lon
         self.crimes = []
         self._weight = 0
-        self._neighbours = dict()
+        self._neighbours = list()
 
     def distance(self, other: Node) -> float:
         return np.sqrt((self.lat - other.lat)**2 + (self.lon - other.lon)**2)
 
     def add_neighbour(self, neighbour: Node):
-        self._neighbours[neighbour.id] = neighbour
+        self._neighbours.append(neighbour)
 
     def get_neighbours(self) -> List[Node]:
         return cp.copy(self._neighbours)
