@@ -6,8 +6,8 @@ from typing import List, Set, Dict
 
 
 class AStar:
-    def __init__(self, graph):
-        self.graph = graph
+    def __init__(self):
+       return None
 
     @staticmethod
     def h_score(curr_node: Node, end_node: Node) -> float:
@@ -21,10 +21,10 @@ class AStar:
         @param  open_set: includes the node
         """
         # initialize the start point from open set as best node
-        best_node = open_set[0]
+        best_node = list(open_set)[0]
         best_score = f_score[best_node]
 
-        for node in open_set[1::]:
+        for node in list(open_set)[1::]:
             score = f_score[node]
             if score < best_score:
                 best_score = score
@@ -40,7 +40,7 @@ class AStar:
             pre_node = came_from[end_node]
             path.append(pre_node)
             end_node = pre_node
-        return path
+        return path[::-1]
 
     def find_path(self, start_node: Node, end_node: Node) -> List[Node]:
         # list of nodes we should visit using a set
@@ -87,3 +87,36 @@ class AStar:
                         open_set.add(nei)
         # failure: no path found
         return None
+
+
+if __name__ == "__main__":
+    from crime import Crime
+    a_star = AStar()
+    start = Node(0, 0)
+    end = Node(2, 0)
+    nei1 = Node(0, 1)
+    nei2 = Node(1, 1)
+    nei3 = Node(2, 1)
+    nei4 = Node(0, 2)
+    nei5 = Node(1, 2)
+    nei6 = Node(2, 2)
+    nei7 = Node(1, 0)
+
+    crime = Crime(1, 0, 'Car', 'Day', 'Dec', '2012')
+    for _ in range(5):
+        nei7.add_crime_occurrence(crime)
+        #nei2.add_crime_occurrence(crime)
+
+    start._neighbours = [nei1, nei7]
+    nei1._neighbours = [start, nei4, nei2]
+    nei2._neighbours = [nei7, nei1, nei5, nei3]
+    nei3._neighbours = [nei2, end, nei6]
+    nei4._neighbours = [nei1, nei5]
+    nei5._neighbours = [nei4,  nei2, nei6]
+    nei6._neighbours = [nei5, nei3]
+    nei7._neighbours = [start, end, nei2]
+    end._neighbours = [nei7, nei3]
+
+    l = a_star.find_path(start, end)
+    for i in l:
+        print(i)
