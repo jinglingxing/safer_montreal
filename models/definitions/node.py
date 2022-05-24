@@ -12,7 +12,7 @@ Coordinates = Tuple[float, float]
 
 class Node (Plotable):
     def __init__(self, lat: float, lon: float):
-        self.id = str(uuid4())
+        self.id = str(uuid4())  # randomly generated ID
         self.lat = lat
         self.lon = lon
         self.crimes = []

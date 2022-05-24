@@ -36,19 +36,19 @@ class GridGraph (Graph):
 
     def find_and_add_neighbours(self, node: GridNode):
         """ check distances and make as neighbour if distance < resolution """
-        for _, cur_node in self._nodes:
+        for cur_node in self._nodes.values():
             if node.distance(cur_node) == self.resolution:
                 self.add_neighbour(node, cur_node)
 
     def create_edges(self):
         """ go over all the nodes """
-        for _, node in self._nodes:
+        for node in self._nodes.values():
             self.find_and_add_neighbours(node)
         
     def add_crime_occurrence(self, crime: Crime):
         for node in self._nodes.values():
             node_zone = node.in_surrounding_zone(self.resolution, crime.lat, crime.lon)
-            print(node_zone)
+
             if node_zone:
                 node.add_crime_occurrence(crime)
                 break  # A crime belongs to only one Grid
