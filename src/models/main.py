@@ -1,11 +1,10 @@
-import random
-import os.path
 import pandas as pd
 from datetime import datetime
 import sys
 sys.path.append('../')
 sys.path.append('../definitions/')
 import graph
+sys.path.append('../features/')
 import node_data
 from crime import Crime
 import matplotlib.pyplot as plt
@@ -49,14 +48,12 @@ if __name__ == "__main__":
             y_min += resolution
         y_min = y_minimal
 
-    # create all the input data without crimes
+    input_data_path = '../../data/node_data.csv'
+    node_data.generate_node_data(grid_graph, input_data_path)
+    data = pd.read_csv(input_data_path, sep=',', encoding='latin-1', index_col=[0])
 
-    if os.path.exists('../../data/node_data.csv'):
-        data = pd.read_csv('../../data/node_data.csv', sep=',', encoding='latin-1', index_col=[0])
-    else:
-        node_data.generate_node_data(grid_graph)
-        data = pd.read_csv('../../data/node_data.csv', sep=',', encoding='latin-1', index_col=[0])
     print(data)
+
 
 
     # ingestion of crimes into our Nodes object
