@@ -11,19 +11,23 @@ Coordinates = Tuple[float, float]
 
 
 class Node (Plotable):
-    def __init__(self, lat: float, lon: float):
-        self.id = str(uuid4())  # randomly generated ID
+    def __init__(self, lat: float, lon: float, id: str = None, crimes = None, neighbours: List[str] = None):
+        self.id = str(uuid4()) # randomly generated string
         self.lat = lat
         self.lon = lon
         self.crimes = []
-        self._weight = 0
-        self._neighbours = list()
+        self._neighbours = set()
+        if crimes:
+            self.crimes = crimes
+        if neighbours:
+            self._neighbours = neighbours
 
     def distance(self, other: Node) -> float:
         return np.sqrt((self.lat - other.lat)**2 + (self.lon - other.lon)**2)
 
-    def add_neighbour(self, neighbour: Node):
-        self._neighbours.append(neighbour)
+    def add_neighbour(self, neighbour_id: str):
+        if self.id != neighbour_id:
+            self._neighbours.add(neighbour_id)
 
     def get_neighbours(self) -> List[Node]:
         return cp.copy(self._neighbours)
@@ -35,7 +39,16 @@ class Node (Plotable):
         return len(self.crimes)
 
     def add_crime_occurrence(self, crime: Crime):
-        self.crimes.append(crime)
+        self.crimes.append(crime.simplified_representation())
+
+    def dict_representation(self):
+        return {
+            "id": self.id,
+            "lat": self.lat,
+            "lon": self.lon,
+            "neighbours": list(self._neighbours),
+            "crimes": self.crimes
+        }
 
     def __str__(self) -> str:
         return f"id: {self.id}, latitude: {self.lat}, longitude: {self.lon}, weight: {self.get_weight()}"
@@ -64,15 +77,21 @@ class GridNode (Node):
 if __name__ == "__main__":
     a = GridNode(-73.62677804694519, 45.567779812980355)
     b = GridNode(-73.62677804694519, 45.56777981298)
+    c = GridNode(-73, 43)
     print(a.distance(b))
-    a.add_neighbour(b)
-    l = a.get_neighbours()
-    l[1] = 1
-    print(a.get_neighbours())
-    print(a.in_surrounding_zone(0.02, -73.62677804694519, 45.56677981298))
-    fig = plt.figure()
-    ax = fig.add_subplot()
-    ax.autoscale(True)
-    a.node_plot(ax)
-    plt.show()
+    a.add_neighbour(b.id)
+    a.add_neighbour(c.id)
+    crime = Crime(-73, 45, '3', 'day', 3, 2020)
+    print(crime.dict_representation())
+    a.add_crime_occurrence(crime)
+    a.add_crime_occurrence(Crime(-73, 45, '2', 'night', 3, 2020))
+    print(a.dict_representation())
+
+    #print(a.get_neighbours())
+    #print(a.in_surrounding_zone(0.02, -73.62677804694519, 45.56677981298))
+    #fig = plt.figure()
+    #ax = fig.add_subplot()
+    #ax.autoscale(True)
+    #a.node_plot(ax)
+    #plt.show()
 
