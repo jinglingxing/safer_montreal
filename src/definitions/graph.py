@@ -8,20 +8,33 @@ class Graph (Plotable):
 
     def __init__(self):
         self._nodes = dict()
+        self._node_int_to_id = dict()
 
     def get_nodes(self):
         return cp.copy(self._nodes)
 
+    def get_node(self, index: int = None, id : str = None) -> Node:
+        if index:
+            return self._nodes[self._node_int_to_id[[index]]]
+        if id:
+            return self._nodes[id]
+
     def add_node(self, lat: float, lon: float):
         node = Node(lat, lon)
         self._nodes[node.id] = node
+
+    def get_node_int_map(self):
+        if not self._node_int_to_id:
+            for index, key in enumerate(self._nodes):
+                self._node_int_to_id[index+1] = key
+        return cp.copy(self._node_int_to_id)
     
     def add_neighbour(self, node: Node, neighbour: Node):
         node.add_neighbour(neighbour.id)
         neighbour.add_neighbour(node.id)
 
     def get_neighbours(self, node: Node):
-        return node.get_neighbours()   
+        return node.get_neighbours()
 
 
 class GridGraph (Graph):
