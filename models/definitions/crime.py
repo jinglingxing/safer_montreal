@@ -12,3 +12,19 @@ class Crime (object):
 
     def get_weight(self):
         return self.type
+
+    def dict_representation(self):
+        return {
+            "type": self.type,
+            "time_of_day": self.time_of_day,
+            "month": str(self.month),
+            "year": str(self.year)
+        }
+
+    def simplified_representation(self):
+        return [
+            self.type,
+            self.time_of_day,
+            self.month,
+            self.year
+        ]

@@ -7,7 +7,7 @@ from typing import List, Set, Dict
 
 class AStar:
     def __init__(self):
-       return None
+        return
 
     @staticmethod
     def h_score(curr_node: Node, end_node: Node) -> float:
