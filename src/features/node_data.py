@@ -16,7 +16,7 @@ def generate_node_data(grid_graph, file_path):
         month_of_year = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
         node_dict = {}
 
-        for i in range(300000):
+        for i in range(2000):
             node_number = random.choice(geo)
             time = time_of_day_to_int[random.choice(time_of_day)]
             month = random.choice(month_of_year)

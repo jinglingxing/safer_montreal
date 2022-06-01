@@ -17,7 +17,7 @@ def load_or_process_graph(path = '../../data/preprocessed_graph.json'):
 
 def preprocess_graph(path = '../../data/preprocessed_graph.json'):
     crime_df = pd.read_csv('../../data/interventionscitoyendo.csv', sep=',', encoding='latin-1')
-    crime_df = crime_df[:2000]
+    #crime_df = crime_df[:2000]
 
     crime_data = crime_df[crime_df['LATITUDE'] != 0]
     date_data = [datetime.strptime(crime_data.iloc[i]['DATE'], '%Y-%m-%d') for i in range(len(crime_data))]
@@ -34,26 +34,26 @@ def preprocess_graph(path = '../../data/preprocessed_graph.json'):
     crime_data = crime_data.replace({"CATEGORIE": crime_type_map})
 
      # find extrema
-    extrema = (crime_data['LONGITUDE'].min(), crime_data['LATITUDE'].min())
-    minima = (crime_data['LONGITUDE'].max(), crime_data['LATITUDE'].max())
+    minima = (crime_data['LONGITUDE'].min(), crime_data['LATITUDE'].min())
+    extrema = (crime_data['LONGITUDE'].max(), crime_data['LATITUDE'].max())
 
     # build grid
-    x_min = extrema[1]  # latitude
-    y_min = extrema[0]  # longitude
-    x_max = minima[1]  # latitude
-    y_max = minima[0]  # longitude
+    x_min = minima[1]  # latitude
+    y_min = minima[0]  # longitude
+    x_max = extrema[1]  # latitude
+    y_max = extrema[0]  # longitude
 
     print('x_max', x_max,
           'y_max', y_max,
           'x_min', x_min,
           'y_min', y_min)
 
-    resolution = 0.02
+    resolution = 0.002
     grid_graph = graph.GridGraph(resolution=resolution, minima=minima, extrema=extrema)
 
     # ingestion of crimes into our Nodes object
     for i in range(len(crime_data)):
-        crime = Crime(crime_data.iloc[i]['LONGITUDE'], crime_data.iloc[i]['LATITUDE'],
+        crime = Crime(crime_data.iloc[i]['LATITUDE'], crime_data.iloc[i]['LONGITUDE'],
                       crime_data.iloc[i]['CATEGORIE'], crime_data.iloc[i]['QUART'],
                       crime_data.iloc[i]['CRIME_MONTH'], crime_data.iloc[i]['CRIME_YEAR'])
         grid_graph.add_crime_occurrence(crime)

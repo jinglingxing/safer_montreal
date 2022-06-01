@@ -64,8 +64,8 @@ class GridGraph(Graph):
         self.resolution = resolution
 
         # add node in grid graph
-        y_min, x_min = extrema
-        y_max, x_max = minima
+        y_min, x_min = minima
+        y_max, x_max = extrema
         y_minimal = y_min
 
         while x_max > x_min:
