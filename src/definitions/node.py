@@ -12,7 +12,7 @@ Coordinates = Tuple[float, float]
 
 class Node (Plotable):
     def __init__(self, lat: float, lon: float, id: str = None, crimes = None, neighbours: List[str] = None):
-        self.id = str(uuid4()) # randomly generated string
+        self.id = str(uuid4()) if not id else id  # randomly generated string
         self.lat = lat
         self.lon = lon
         self.crimes = []
@@ -22,8 +22,11 @@ class Node (Plotable):
         if neighbours:
             self._neighbours = neighbours
 
-    def distance(self, other: Node) -> float:
-        return np.sqrt((self.lat - other.lat)**2 + (self.lon - other.lon)**2)
+    def distance(self, lat: float, lon: float) -> float:
+        return np.sqrt((self.lat - lat)**2 + (self.lon - lon)**2)
+
+    def distance_node(self, other: Node) -> float:
+        return self.distance(other.lat, other.lon)
 
     def add_neighbour(self, neighbour_id: str):
         if self.id != neighbour_id:
@@ -78,7 +81,7 @@ if __name__ == "__main__":
     a = GridNode(-73.62677804694519, 45.567779812980355)
     b = GridNode(-73.62677804694519, 45.56777981298)
     c = GridNode(-73, 43)
-    print(a.distance(b))
+    print(a.distance_node(b))
     a.add_neighbour(b.id)
     a.add_neighbour(c.id)
     crime = Crime(-73, 45, '3', 'day', 3, 2020)

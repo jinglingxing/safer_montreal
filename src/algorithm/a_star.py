@@ -6,13 +6,13 @@ from typing import List, Set, Dict
 
 
 class AStar:
-    def __init__(self):
-        return
+    def __init__(self, graph):
+        self.graph = graph
 
     @staticmethod
     def h_score(curr_node: Node, end_node: Node) -> float:
         """ h_score(heuristic function) represents the estimation to reach the end node """
-        euclidean_distance = curr_node.distance(end_node)
+        euclidean_distance = curr_node.distance_node(end_node)
         return euclidean_distance
 
     def search_best_node(self, open_set: Set[Node], f_score: Dict[Node, float]) -> Node:
@@ -72,7 +72,8 @@ class AStar:
 
             # check the neighbors of current node if we didn't find the path
             neighbors = curr_node.get_neighbours()
-            for nei in neighbors:
+            for nei_id in neighbors:
+                nei = self.graph.get_node(id=nei_id)
                 # d(current,neighbor) is the weight of the edge from current to neighbor
                 d_score = nei.get_weight()
                 # tentative_gScore is the distance from start to the neighbor through current
@@ -91,32 +92,23 @@ class AStar:
 
 if __name__ == "__main__":
     from crime import Crime
-    a_star = AStar()
-    start = Node(0, 0)
-    end = Node(2, 0)
-    nei1 = Node(0, 1)
-    nei2 = Node(1, 1)
-    nei3 = Node(2, 1)
-    nei4 = Node(0, 2)
-    nei5 = Node(1, 2)
-    nei6 = Node(2, 2)
-    nei7 = Node(1, 0)
+    from graph import GridGraph
+
+    grid_graph = GridGraph(resolution=1, minima=[2.5,2.5], extrema=[-0.5,-0.5])
+    grid_graph.create_edges()
 
     crime = Crime(1, 0, 'Car', 'Day', 'Dec', '2012')
     for _ in range(5):
-        nei7.add_crime_occurrence(crime)
-        #nei2.add_crime_occurrence(crime)
+        grid_graph.add_crime_occurrence(crime)
 
-    start._neighbours = [nei1, nei7]
-    nei1._neighbours = [start, nei4, nei2]
-    nei2._neighbours = [nei7, nei1, nei5, nei3]
-    nei3._neighbours = [nei2, end, nei6]
-    nei4._neighbours = [nei1, nei5]
-    nei5._neighbours = [nei4,  nei2, nei6]
-    nei6._neighbours = [nei5, nei3]
-    nei7._neighbours = [start, end, nei2]
-    end._neighbours = [nei7, nei3]
+    print(grid_graph.dict_representation()['nodes'])
 
-    l = a_star.find_path(start, end)
-    for i in l:
-        print(i)
+    start = grid_graph.find_closest_node(lat=0, lon=0)
+    end = grid_graph.find_closest_node(lat=2, lon=0)
+    print(start.dict_representation())
+    print(end.dict_representation())
+
+    a_star = AStar(grid_graph)
+    path = a_star.find_path(start, end)
+    for node in path:
+        print(node)

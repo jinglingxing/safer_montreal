@@ -2,7 +2,7 @@
 
 class Crime (object):
 
-    def __init__(self, lon: float, lat: float, crime_type: str, time_of_day: str, month: int, year: int):
+    def __init__(self, lat: float, lon: float, crime_type: str, time_of_day: str, month: int, year: int):
         self.lat = lat
         self.lon = lon
         self.type = crime_type
