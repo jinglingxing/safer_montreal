@@ -56,7 +56,7 @@ class Node (Plotable):
 
     def filter(self, time_of_day, month):
         df = pd.DataFrame(self.crimes, columns=['type_of_crime', 'time_of_day', 'month', 'year'])
-        part_df = df[(df['time_of_day'] == time_of_day) & (df[df['month'] == month])]
+        part_df = df[(df['time_of_day'] == time_of_day) & (df['month'] == month)]
         num_crimes = len(part_df)
         return num_crimes
 

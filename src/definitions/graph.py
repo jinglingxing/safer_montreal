@@ -55,8 +55,8 @@ class Graph(Plotable):
         for node in self._nodes.values():
             num_crimes = node.filter(time_of_day, month)
             num_crimes_list.append(num_crimes)
-        max_num_crimes = max(num_crimes_list)
-        node_id = self._node_int_to_id(node_number)
+        max_num_crimes = sum(num_crimes_list)
+        node_id = self._node_int_to_id[node_number]
         node = self._nodes[node_id]
         num_crimes = node.filter(time_of_day, month)
         probability = float(num_crimes)/max_num_crimes
@@ -131,12 +131,33 @@ class GridGraph(Graph):
 
 
 if __name__ == '__main__':
-    import json
+    # import json
+    #
+    # with open('../../data/preprocessed_graph.json', 'r') as f:
+    #     json_obj = json.load(f)
+    #     g = GridGraph(json=json_obj)
+    #
+    # with open('../../data/preprocessed_graph.json', 'w') as f:
+    #     f.write(json.dumps(json.loads(str(g.dict_representation()).replace("\'", "\"")), indent=4,
+    #                        sort_keys=False))
 
-    with open('../../data/preprocessed_graph.json', 'r') as f:
-        json_obj = json.load(f)
-        g = GridGraph(json=json_obj)
+    grid_graph = GridGraph(resolution=1, minima=[-0.5, -0.5], extrema=[2.5, 2.5])
+    grid_graph.create_edges()
 
-    with open('../../data/preprocessed_graph.json', 'w') as f:
-        f.write(json.dumps(json.loads(str(g.dict_representation()).replace("\'", "\"")), indent=4,
-                           sort_keys=False))
+    crime = Crime(0, 1, 'Car', 'nuit', 6, 2012)
+    for _ in range(5):
+        grid_graph.add_crime_occurrence(crime)
+
+    crime = Crime(0, 2, 'Car', 'nuit', 6, 2009)
+    for _ in range(10):
+        grid_graph.add_crime_occurrence(crime)
+
+    print(grid_graph.dict_representation()['nodes'])
+    int_id = grid_graph.get_node_int_map()
+    crime_node = grid_graph.find_closest_node(0, 2)
+    for key, value in int_id.items():
+        if value == crime_node.id:
+            node_int = key
+
+    p1 = grid_graph.filter(node_int, 3, 6)
+    print(p1)
