@@ -1,7 +1,7 @@
-
 import random
 import pandas as pd
 import os.path
+
 
 def generate_node_data(grid_graph, file_path):
     """
