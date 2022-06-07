@@ -2,6 +2,7 @@ from __future__ import annotations
 from plotable import Plotable
 from crime import Crime
 import numpy as np
+import pandas as pd
 from uuid import uuid4
 import copy as cp
 from typing import List, Tuple
@@ -11,7 +12,7 @@ Coordinates = Tuple[float, float]
 
 
 class Node (Plotable):
-    def __init__(self, lat: float, lon: float, id: str = None, crimes = None, neighbours: List[str] = None):
+    def __init__(self, lat: float, lon: float, id: str = None, crimes=None, neighbours: List[str] = None):
         self.id = str(uuid4()) if not id else id  # randomly generated string
         self.lat = lat
         self.lon = lon
@@ -52,6 +53,12 @@ class Node (Plotable):
             "neighbours": list(self._neighbours),
             "crimes": self.crimes
         }
+
+    def filter(self, time_of_day, month):
+        df = pd.DataFrame(self.crimes, columns=['type_of_crime', 'time_of_day', 'month', 'year'])
+        part_df = df[(df['time_of_day'] == time_of_day) & (df['month'] == month)]
+        num_crimes = len(part_df)
+        return num_crimes
 
     def __str__(self) -> str:
         return f"id: {self.id}, latitude: {self.lat}, longitude: {self.lon}, weight: {self.get_weight()}"

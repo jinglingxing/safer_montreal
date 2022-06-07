@@ -6,14 +6,15 @@ sys.path.append('../')
 sys.path.append('../definitions/')
 import graph
 from crime import Crime
-import matplotlib.pyplot as plt
 import json
 
-def load_or_process_graph(path = '../../data/preprocessed_graph.json'):
+
+def load_or_process_graph(path='../../data/preprocessed_graph.json'):
     if os.path.exists(path):
         return graph.GridGraph(json=json.load(open(path, 'r')))
     else:
         return preprocess_graph(path)
+
 
 def preprocess_graph(path = '../../data/preprocessed_graph.json'):
     crime_df = pd.read_csv('../../data/interventionscitoyendo.csv', sep=',', encoding='latin-1')

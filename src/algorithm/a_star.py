@@ -94,7 +94,7 @@ if __name__ == "__main__":
     from crime import Crime
     from graph import GridGraph
 
-    grid_graph = GridGraph(resolution=1, minima=[2.5,2.5], extrema=[-0.5,-0.5])
+    grid_graph = GridGraph(resolution=1, minima=[-0.5, -0.5], extrema=[2.5, 2.5])
     grid_graph.create_edges()
 
     crime = Crime(1, 0, 'Car', 'Day', 'Dec', '2012')
