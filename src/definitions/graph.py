@@ -3,6 +3,7 @@ from crime import Crime
 from node import Node, GridNode, Coordinates
 import copy as cp
 from typing import List, Dict
+from numba import jit
 
 
 class Graph(Plotable):
@@ -48,18 +49,19 @@ class Graph(Plotable):
                 closest_node = node
         return closest_node
 
+    @jit
     def filter(self, node_number, time_of_day, month):
         reverse_map = {1: 'jour', 2: 'soir', 3: 'nuit'}
         time_of_day = reverse_map[time_of_day]
-        num_crimes_list = []
-        for node in self._nodes.values():
-            num_crimes = node.filter(time_of_day, month)
-            num_crimes_list.append(num_crimes)
-        max_num_crimes = sum(num_crimes_list)
         node_id = self._node_int_to_id[node_number]
         node = self._nodes[node_id]
         num_crimes = node.filter(time_of_day, month)
-        probability = float(num_crimes)/max_num_crimes
+        if not num_crimes:
+            return 0
+        total = 0
+        for node in self._nodes.values():
+            total += node.filter(time_of_day, month)
+        probability = float(num_crimes)/total if total else 0
         return probability
 
 
