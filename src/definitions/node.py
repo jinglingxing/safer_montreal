@@ -17,11 +17,23 @@ class Node (Plotable):
         self.lat = lat
         self.lon = lon
         self.crimes = []
+        self.crimes_df = None
+        self.month_to_num_crimes = {}
+        self.time_to_num_crimes = {}
         self._neighbours = set()
-        if crimes:
+        if crimes is not None:
             self.crimes = crimes
+            self.init_crimes_df()
         if neighbours:
             self._neighbours = neighbours
+
+    def init_crimes_df(self):
+        self.crimes_df = pd.DataFrame(self.crimes, columns=['type_of_crime', 'time_of_day', 'month', 'year'])
+        # fill in time of day
+        for i in ['jour', 'soir', 'nuit']:
+            self.time_to_num_crimes[i] = len(self.crimes_df[self.crimes_df['time_of_day'] == i])
+        for i in range(1, 13):
+            self.month_to_num_crimes[i] = len(self.crimes_df[self.crimes_df['month'] == i])
 
     def distance(self, lat: float, lon: float) -> float:
         return np.sqrt((self.lat - lat)**2 + (self.lon - lon)**2)
@@ -55,9 +67,15 @@ class Node (Plotable):
         }
 
     def filter(self, time_of_day, month):
-        df = pd.DataFrame(self.crimes, columns=['type_of_crime', 'time_of_day', 'month', 'year'])
-        part_df = df[(df['time_of_day'] == time_of_day) & (df['month'] == month)]
-        num_crimes = len(part_df)
+        #print('######## ', time_of_day, month, self.time_to_num_crimes, self.month_to_num_crimes)
+        if self.crimes_df is None:
+            self.init_crimes_df()
+        #  part_df = self.crimes_df[(self.crimes_df['time_of_day'] == time_of_day) & (self.crimes_df['month'] == month)]
+        try:
+            num_crimes = self.time_to_num_crimes[time_of_day] + self.month_to_num_crimes[month]
+        except KeyError as e:
+            print('####', time_of_day, self.time_to_num_crimes, month, self.month_to_num_crimes)
+            raise e
         return num_crimes
 
     def __str__(self) -> str:
