@@ -13,12 +13,14 @@
 
 - create an env
 ```bash
-virtualenv -p /usr/bin/python3 venv
+virtualenv -p /usr/bin/python3 venv (MacOS)
+virtualenv --python C:\Users\Public\anaconda\python.exe venv (Windows)
 ```
 
 - use the env
 ```bash
-source venv/bin/activate
+source venv/bin/activate (MacOS)
+.\venv\Scripts\activate (Windows)
 ```
 
 - install everything from env
