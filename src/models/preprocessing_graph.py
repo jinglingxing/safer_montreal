@@ -67,6 +67,7 @@ def preprocess_graph(path = '../../data/preprocessed_graph.json'):
 
     return grid_graph
 
+
 if __name__ == "__main__":
     print(" running code ... ")
     # import and process data

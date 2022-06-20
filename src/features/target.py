@@ -4,6 +4,7 @@ from threading import Thread
 import numpy as np
 from numba import jit
 
+
 def filter_target(graph, path='../../data/target.csv'):
     if os.path.exists(path):
         pass

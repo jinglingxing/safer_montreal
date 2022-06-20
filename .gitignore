@@ -5,6 +5,7 @@ venv
 .ipynb_checkpoints
 /.ipynb_checkpoints
 /.ipynb_checkpoints
+notebooks/.ipynb_checkpoints
 .DS_Store
 /.DS_Store
 .idea/
