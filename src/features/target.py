@@ -9,7 +9,7 @@ def filter_target(graph, path='../../data/target.csv'):
     if os.path.exists(path):
         pass
     else:
-        df = pd.read_csv('../../data/node_data.csv', sep=',', encoding='latin-1')
+        df = pd.read_csv('../../data/node_data_t.csv', sep=',', encoding='latin-1')
         n_threads = 6
         l = [ list() for _ in range(n_threads)]
         threads = []
@@ -46,8 +46,8 @@ if __name__ == '__main__':
     sys.path.append('../models')
     from preprocessing_graph import load_or_process_graph
 
-    graph = load_or_process_graph(path='../../data/preprocessed_graph.json')
-    filter_target(graph, path='../../data/target.csv')
+    graph = load_or_process_graph(path='../../data/preprocessed_graph_test.json')
+    filter_target(graph, path='../../data/target_t.csv')
 
 
 

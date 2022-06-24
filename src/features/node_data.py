@@ -18,13 +18,14 @@ def generate_node_data(grid_graph, file_path):
         node_dict = {}
 
         for node_number in geo:
-            n = random.randint(20, 24)
-            for _ in range(n):
-                time = time_of_day_to_int[random.choice(time_of_day)]
-                month = random.choice(month_of_year)
-                node_dict[counter] = [time, month, node_number]
-                counter += 1
-                print(counter)
+            if node_number == geo[36]:
+                n = random.randint(20, 24)
+                for _ in range(1000):
+                    time = time_of_day_to_int[random.choice(time_of_day)]
+                    month = random.choice(month_of_year)
+                    node_dict[counter] = [time, month, node_number]
+                    counter += 1
+                    print(counter)
 
         node_df = pd.DataFrame.from_dict(node_dict, orient='index',
                                          columns=['time_of_day', 'month_of_year', 'node_number'])
@@ -34,6 +35,6 @@ def generate_node_data(grid_graph, file_path):
 
 if __name__ == '__main__':
     from src.models.preprocessing_graph import load_or_process_graph
-    graph = load_or_process_graph('../../data/preprocessed_graph.json')
-    generate_node_data(graph, '../../data/node_data.csv')
+    graph = load_or_process_graph('../../data/preprocessed_graph_test.json')
+    generate_node_data(graph, '../../data/node_data_t.csv')
 
