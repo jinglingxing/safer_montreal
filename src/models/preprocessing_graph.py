@@ -5,7 +5,6 @@ import os
 sys.path.append('../')
 sys.path.append('../definitions/')
 import graph
-from crime import Crime
 import json
 
 
@@ -18,7 +17,7 @@ def load_or_process_graph(path='../../data/preprocessed_graph.json'):
 
 def preprocess_graph(path = '../../data/preprocessed_graph.json'):
     crime_df = pd.read_csv('../../data/interventionscitoyendo.csv', sep=',', encoding='latin-1')
-    #crime_df = crime_df[:2000]
+    # crime_df = crime_df[:200]
 
     crime_data = crime_df[crime_df['LATITUDE'] != 0]
     date_data = [datetime.strptime(crime_data.iloc[i]['DATE'], '%Y-%m-%d') for i in range(len(crime_data))]
@@ -34,43 +33,36 @@ def preprocess_graph(path = '../../data/preprocessed_graph.json'):
                       "Infractions entrainant la mort": 6}
     crime_data = crime_data.replace({"CATEGORIE": crime_type_map})
 
-     # find extrema
-    minima = (crime_data['LONGITUDE'].min(), crime_data['LATITUDE'].min())
-    extrema = (crime_data['LONGITUDE'].max(), crime_data['LATITUDE'].max())
-
-    # build grid
-    x_min = minima[1]  # latitude
-    y_min = minima[0]  # longitude
-    x_max = extrema[1]  # latitude
-    y_max = extrema[0]  # longitude
-
-    print('x_max', x_max,
-          'y_max', y_max,
-          'x_min', x_min,
-          'y_min', y_min)
-
     resolution = 0.002
-    grid_graph = graph.GridGraph(resolution=resolution, minima=minima, extrema=extrema)
 
-    # ingestion of crimes into our Nodes object
-    for i in range(len(crime_data)):
-        crime = Crime(crime_data.iloc[i]['LATITUDE'], crime_data.iloc[i]['LONGITUDE'],
-                      crime_data.iloc[i]['CATEGORIE'], crime_data.iloc[i]['QUART'],
-                      crime_data.iloc[i]['CRIME_MONTH'], crime_data.iloc[i]['CRIME_YEAR'])
-        grid_graph.add_crime_occurrence(crime)
+    cross_roads = json.load(open('../../data/geojson_cross_roads.json', 'r'))['features']
+    roads = json.load(open('../../data/geojson_roads.json', 'r'))['features']
 
-    # create edges
-    grid_graph.create_edges()
+    grid_graph = graph.GridGraph(
+        resolution=resolution,
+        crime_data=crime_data,
+        cross_roads=cross_roads,
+        roads=roads
+    )
 
     with open(path, 'w') as file:
-        file.write(json.dumps(json.loads(str(grid_graph.dict_representation()).replace("\'", "\"")), indent=4, sort_keys=False))
+        s = str(grid_graph.dict_representation()).replace("\'", "\"")
+        # print(s)
+        j = json.loads(s)
+        # print(j)
+        file.write(json.dumps(j, indent=4, sort_keys=False))
 
     return grid_graph
 
 
 if __name__ == "__main__":
+    import time
     print(" running code ... ")
+    st = time.time()
     # import and process data
-    preprocess_graph()
+    # preprocess_graph('../../data/preprocessed_grid_graph.json')
 
-    
+
+    gg = load_or_process_graph('../../data/preprocessed_grid_graph.json')
+    print(len(gg._nodes), len(gg._grid_nodes))
+    print('took: ', time.time() - st)
