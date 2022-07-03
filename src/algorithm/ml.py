@@ -10,15 +10,25 @@ from sklearn.preprocessing import StandardScaler
 if __name__ == '__main__':
     tf.random.set_seed(42)
     np.random.seed(42)
+    grid_node_data = pd.read_csv('../../data/grid_node_data.csv', sep=',', encoding='latin-1', index_col=0)
+    police_station_data = pd.read_csv('../../data/police-station.csv', sep=',', encoding='latin-1', index_col=0)
+    fire_station_data = pd.read_csv('../../data/fire-station.csv', sep=',', encoding='latin-1', index_col=0)
 
-    X = pd.read_csv('../../data/node_data_t.csv', sep=',', encoding='latin-1')
-    y = pd.read_csv('../../data/target_t.csv', sep=',', encoding='latin-1')
-    X = X[['time_of_day', 'month_of_year', 'node_number']]
+    zone_police_data = pd.merge(grid_node_data, police_station_data, how='left', on=['x', 'y'])
+    zone_df = pd.merge(zone_police_data, fire_station_data, how='left', on=['x', 'y'])
+
+    X = zone_df[['time_of_day',
+                 'month_of_year',
+                 'x', 'y',
+                 'number of police station',
+                 'number of fire station']]
+
+    y = pd.read_csv('../../data/grid_target.csv', sep=',', encoding='latin-1')
     y = y[['target']]['target']
 
-    sep1, sep2, sep3 = int(len(X)*0.05), int(len(X)*0.07), int(len(X)*0.08)
+    sep1, sep2, sep3 = int(len(X)*0.7), int(len(X)*0.8), int(len(X))
     X_train, X_valid, X_test = X[:sep1], X[sep1:sep2], X[sep2:sep3]
-    y_train, y_valid, y_test = y[:sep1]*100, y[sep1:sep2]*100, y[sep2:sep3]*100  # change probability to be percentage
+    y_train, y_valid, y_test = y[:sep1], y[sep1:sep2], y[sep2:sep3]
 
     model = keras.models.Sequential([
         keras.layers.Dense(3, activation="sigmoid", kernel_initializer="he_normal", input_shape=X_train.shape[1:]),
