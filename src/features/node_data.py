@@ -35,7 +35,7 @@ def generate_node_data(grid_graph, file_path):
             file.write(node_df.to_csv(line_terminator='\n'))
 
 
-def add_feature(zone_json: Dict, feature: List[Dict]):
+def add_feature(zone_json: Dict, feature: List[Dict], feature_name: String):
     """
     add more features to our zone(grid node)
     :param zone_json: preprocessed_grid_graph
@@ -54,7 +54,7 @@ def add_feature(zone_json: Dict, feature: List[Dict]):
                 new_feature_dict[(x, y)] += 1
 
     l = [[x, y, v] for (x, y), v in new_feature_dict.items()]
-    return pd.DataFrame(l, columns=['x', 'y', 'number of police station'])
+    return pd.DataFrame(l, columns=['x', 'y', feature_name])
 
 
 if __name__ == '__main__':
@@ -65,13 +65,13 @@ if __name__ == '__main__':
     grid_graph_json = json.load(open('../../data/preprocessed_grid_graph.json', 'r'))
     police_json = json.load(open('../../data/police-station.json'))
     police_features = police_json['features']
-    police_station = add_feature(grid_graph_json, police_features)
+    police_station = add_feature(grid_graph_json, police_features, 'number of police station')
     with open('../../data/police-station.csv', 'w') as file:
         file.write(police_station.to_csv(line_terminator='\n'))
     
     fire_json = json.load(open('../../data/fire-station.json'))
     fire_features = fire_json['features']
-    fire_station = add_feature(grid_graph_json, fire_features)
+    fire_station = add_feature(grid_graph_json, fire_features, 'number of fire station')
     with open('../../data/fire-station.csv', 'w') as file:
         file.write(fire_station.to_csv(line_terminator='\n'))
 
