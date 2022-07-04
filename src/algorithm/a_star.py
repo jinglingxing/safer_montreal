@@ -6,8 +6,9 @@ from typing import List, Set, Dict
 
 
 class AStar:
-    def __init__(self, graph):
+    def __init__(self, graph, model):
         self.graph = graph
+        self.model = model
 
     @staticmethod
     def h_score(curr_node: Node, end_node: Node) -> float:
@@ -73,9 +74,11 @@ class AStar:
             # check the neighbors of current node if we didn't find the path
             neighbors = curr_node.get_neighbours()
             for nei_id in neighbors:
-                nei = self.graph.get_node(id=nei_id)
-                # d(current,neighbor) is the weight of the edge from current to neighbor
-                d_score = nei.get_weight()
+                nei = self.graph.get_node(nei_id)
+                # we obtain the partial input of our model for our neighbour
+                partial_input = self.graph.get_partial_input(nei)
+                # d(current,neighbor) is the probability of having a crime in the neighbor node
+                d_score = self.model.get_probability(partial_input)
                 # tentative_gScore is the distance from start to the neighbor through current
                 tentative_g_score = g_score[curr_node] + d_score
                 if nei not in g_score or tentative_g_score < g_score[nei]:

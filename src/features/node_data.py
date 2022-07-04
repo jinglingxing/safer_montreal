@@ -35,7 +35,7 @@ def generate_node_data(grid_graph, file_path):
             file.write(node_df.to_csv(line_terminator='\n'))
 
 
-def add_feature(zone_json: Dict, feature: List[Dict], feature_name: String):
+def add_feature(zone_json: Dict, feature: List[Dict], feature_name: str):
     """
     add more features to our zone(grid node)
     :param zone_json: preprocessed_grid_graph

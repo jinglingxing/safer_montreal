@@ -221,6 +221,10 @@ class GridGraph(Graph):
         probability = node_prob_crimes * float(total_crimes)/max if max else 0
         return probability
 
+    def get_partial_input(self, node: Node):
+        grid_node = self._grid_nodes[node.grid_node_id]
+        return grid_node.x, grid_node.y, None, None
+
     def plot(self, ax, color=None):
         for node in self._nodes.values():
             # node.node_plot(ax, color='b')
