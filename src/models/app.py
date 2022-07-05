@@ -1,40 +1,46 @@
-from jupyter_dash import JupyterDash
-
-import json
+import plotly.graph_objects as go
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
+import json
+from dash import dcc
 import dash_leaflet as dl
-# import settings
-
+import sys
+sys.path.append('../../')
+from dash import html
+import pandas as pd
 from dash.dependencies import Output, Input
 
-MAP_ID = "map-id"
-COORDINATE_CLICK_ID = "coordinate-click-id"
 
-# app = dash.Dash(__name__, external_scripts=['https://codepen.io/chriddyp/pen/bWLwgP.css'])
-app = JupyterDash(__name__, external_scripts=['https://codepen.io/chriddyp/pen/bWLwgP.css'])
 
-# Create layout.
+source_df = pd.read_csv('../../data/interventionscitoyendo.csv',
+                        sep=',',
+                        encoding='latin-1',
+                        index_col=[0]).reset_index()
+
+source_df = source_df[['LONGITUDE', 'LATITUDE']]
+
+
+app = dash.Dash()
 app.layout = html.Div([
-    html.H1("Example: Gettings coordinates from click"),
-    dl.Map(id=MAP_ID, style={'width': '1000px', 'height': '500px'}, center=[32.7, -96.8], zoom=5, children=[
-        dl.TileLayer()
-        ]),
-
     html.P("Coordinate (click on map):"),
-    html.Div(id=COORDINATE_CLICK_ID)
-
+    html.Div(id="coordinate-click-id"),
+    dl.Map(id='map_id',
+           style={'width': '1200px', 'height': '900px'},
+           center=[45.5416889, -73.667256], zoom=11,
+           children=[
+               dl.TileLayer()
+           ]
+           ),
 ])
 
-@app.callback(Output(COORDINATE_CLICK_ID, 'children'),
-              [Input(MAP_ID, 'click_lat_lng')])
+
+@app.callback(Output("coordinate-click-id", 'children'),
+              [Input("map_id", 'click_lat_lng')])
 def click_coord(e):
     if e is not None:
         return json.dumps(e)
     else:
         return "-"
 
-if __name__ == '__main__':
 
-    app.run_server(port=8080, debug=True, mode='inline')
+if __name__ == '__main__':
+    app.run_server(port='8052', debug=True, use_reloader=False)
