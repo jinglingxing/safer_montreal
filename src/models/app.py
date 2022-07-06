@@ -3,20 +3,8 @@ import dash
 import json
 from dash import dcc
 import dash_leaflet as dl
-import sys
-sys.path.append('../../')
 from dash import html
-import pandas as pd
 from dash.dependencies import Output, Input
-
-
-
-source_df = pd.read_csv('../../data/interventionscitoyendo.csv',
-                        sep=',',
-                        encoding='latin-1',
-                        index_col=[0]).reset_index()
-
-source_df = source_df[['LONGITUDE', 'LATITUDE']]
 
 
 app = dash.Dash()
