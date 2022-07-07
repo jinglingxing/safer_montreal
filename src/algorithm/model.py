@@ -3,6 +3,7 @@ import keras
 from typing import Tuple
 from datetime import datetime
 import pandas as pd
+import numpy as np
 
 
 class Model(object):
@@ -36,14 +37,21 @@ class Model(object):
         l2 = self.dt_scaler.transform(scaler_columns)
         l1 = self.ohe.transform(one_hot_encoded_columns)
 
-        input = l1+l2
+        input = np.concatenate((l1[0], l2[0]), axis=0)
         crime_or_not = self.decision_tree.predict([input])
         if not crime_or_not:
             return 0
         l3 = self.nn_scaler.transform(scaler_columns)
-        input = l1+l3
+        input = np.concatenate((l1[0], l3[0]), axis=0)
         return self.neural_network.predict([input])
 
-
+if __name__ == '__main__':
+    m = Model('../../notebooks/decision_tree_model.pkl',
+              '../../notebooks/best_nn.h5',
+              '../../notebooks/DT_MinMaxScaler.pkl',
+              '../../notebooks/NN_MinMaxScaler.pkl',
+              '../../notebooks/OneHotEncodingScaler.pkl')
+    print(m.get_probability((8, 40, None, None)))
+    print(m.get_probability((13, 176, None, None)))
 
 

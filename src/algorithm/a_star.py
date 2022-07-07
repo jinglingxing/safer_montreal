@@ -2,7 +2,7 @@ import sys
 sys.path.append('../')
 sys.path.append('../definitions/')
 from node import Node
-from typing import List, Set, Dict
+from typing import List, Set, Dict, Tuple
 
 
 class AStar:
@@ -91,6 +91,16 @@ class AStar:
                         open_set.add(nei)
         # failure: no path found
         return None
+
+    def get_path(self, departure: Tuple[float, float], destination: Tuple[float, float]) -> List[Tuple[float, float]]:
+        dep_lat, dep_lon = departure
+        dest_lat, dest_lon = destination
+        start_node = self.graph.find_closest_node(dep_lat, dep_lon)
+        end_node = self.graph.find_closest_node(dest_lat, dest_lon)
+        path = self.find_path(start_node, end_node)
+
+        return [departure] + [node.get_coordinates() for node in path] + [destination]
+
 
 
 if __name__ == "__main__":

@@ -21,6 +21,12 @@ class Node (Plotable):
         if neighbours:
             self._neighbours = set(neighbours)
 
+    def get_coordinates(self):
+        """
+        Obtain the coordinates of the Node to display it on the map
+        """
+        return (self.lat, self.lon)
+
     def distance(self, lat: float, lon: float) -> float:
         return np.sqrt((self.lat - lat)**2 + (self.lon - lon)**2)
 
