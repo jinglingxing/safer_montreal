@@ -8,14 +8,14 @@ import graph
 import json
 
 
-def load_or_process_graph(path='../../data/preprocessed_graph.json'):
+def load_or_process_graph(path='../../data/preprocessed_grid_graph.json'):
     if os.path.exists(path):
-        return graph.GridGraph(json=json.load(open(path, 'r')))
+        return graph.MapGraph(json=json.load(open(path, 'r')))
     else:
         return preprocess_graph(path)
 
 
-def preprocess_graph(path = '../../data/preprocessed_graph.json'):
+def preprocess_graph(path = '../../data/preprocessed_grid_graph.json'):
     crime_df = pd.read_csv('../../data/interventionscitoyendo.csv', sep=',', encoding='latin-1')
     # crime_df = crime_df[:200]
 
@@ -35,13 +35,11 @@ def preprocess_graph(path = '../../data/preprocessed_graph.json'):
 
     resolution = 0.002
 
-    cross_roads = json.load(open('../../data/geojson_cross_roads.json', 'r'))['features']
     roads = json.load(open('../../data/geojson_roads.json', 'r'))['features']
 
-    grid_graph = graph.GridGraph(
+    grid_graph = graph.MapGraph(
         resolution=resolution,
         crime_data=crime_data,
-        cross_roads=cross_roads,
         roads=roads
     )
 
@@ -63,6 +61,13 @@ if __name__ == "__main__":
     # preprocess_graph('../../data/preprocessed_grid_graph.json')
 
 
-    gg = load_or_process_graph('../../data/preprocessed_grid_graph.json')
-    print(len(gg._nodes), len(gg._grid_nodes))
+    gg = load_or_process_graph('../../data/preprocessed_map_graph.json')
+    # gg.process_station(json.load(open('../../data/police-station.json', 'r'))['features'], "police_stations")
+    # gg.process_station(json.load(open('../../data/fire-station.json', 'r'))['features'], "fire_stations")
+    # with open('../../data/preprocessed_map_graph.json', 'w') as file:
+    #     s = str(gg.dict_representation()).replace("\'", "\"")
+    #     # print(s)
+    #     j = json.loads(s)
+    #     # print(j)
+    #     file.write(json.dumps(j, indent=4, sort_keys=False))
     print('took: ', time.time() - st)

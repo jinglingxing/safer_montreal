@@ -1,5 +1,5 @@
 from crime import Crime
-from node import Node, GridNode, Coordinates
+from node import Node, Zone, Coordinates, Point
 import copy as cp
 from typing import List, Dict, Tuple
 from numba import jit
@@ -46,17 +46,20 @@ class Graph(object):
         return closest_node
 
 
-class GridGraph(Graph):
+class MapGraph(Graph):
 
     def __init__(self,
                  resolution: float = None,
                  crime_data: pd.DataFrame = None,
-                 cross_roads: List[Dict] = None,
                  roads: List[Dict] = None,
+                 police_station_json: List[Dict] = None,
+                 fire_station_json: List[Dict] = None,
                  json: dict = None):
         super().__init__()
-        self._grid_nodes: Dict[str, GridNode] = dict()
-        self._grid_node_coordinates_to_id: Dict[Tuple[int, int], str] = dict()
+        self._zones: Dict[str, Zone] = dict()
+        self._zone_coordinates_to_id: Dict[Tuple[int, int], str] = dict()
+        self._police_stations: Dict[str, Point] = dict()
+        self._fire_stations: Dict[str, Point] = dict()
 
         # if we preprocessed the graph and saved it in json form, read it.
         if json:
@@ -66,15 +69,30 @@ class GridGraph(Graph):
             for index, element in enumerate(json['nodes']):
                 print('processing node number ', index, 'over ', total_nodes)
                 self._nodes[element['id']] = Node(element['lat'], element['lon'],
-                                                  element['id'], element['grid_node_id'], element['neighbours'])
-            print('### processing grid nodes')
-            total_grid_nodes = len(json['grid_nodes'])
-            for index, element in enumerate(json['grid_nodes']):
-                print('processing grid node number ', index, 'over ', total_grid_nodes)
-                self._grid_nodes[element['grid_node_id']] = GridNode(element['lat'], element['lon'],
-                                                                     element['x'], element['y'],
-                                                                     element['grid_node_id'], element['crimes'])
-            self._grid_node_coordinates_to_id = {eval(k): v for k, v in json['grid_node_coordinates_to_id'].items()}
+                                                  element['id'], element['zone_id'], element['neighbours'])
+            print('### processing zones')
+            total_zones = len(json['zones'])
+            for index, element in enumerate(json['zones']):
+                print('processing zone number ', index, 'over ', total_zones)
+                self._zones[element['zone_id']] = Zone(element['lat'], element['lon'],
+                                                     element['x'], element['y'],
+                                                     element['zone_id'], element['crimes'],
+                                                     element['num_police_station'], element['num_fire_station'])
+            self._zone_coordinates_to_id = {eval(k): v for k, v in json['zone_coordinates_to_id'].items()}
+
+            print('### processing police stations')
+            total_police_stations = len(json['police_stations'])
+            for index, element in enumerate(json['police_stations']):
+                print('processing police station', index, 'over', total_police_stations)
+                self._police_stations[element['id']] = Point(element['lat'], element['lon'], element['id'],
+                                                             element['zone_id'])
+
+            print('### processing fire stations')
+            total_police_stations = len(json['fire_stations'])
+            for index, element in enumerate(json['fire_stations']):
+                print('processing fire station', index, 'over', total_police_stations)
+                self._fire_stations[element['id']] = Point(element['lat'], element['lon'], element['id'],
+                                                           element['zone_id'])
             return
 
         # normal initialization, with all the preprocessing
@@ -101,7 +119,7 @@ class GridGraph(Graph):
             self.add_neighbour(node_start, node_end)
 
 
-        # add node in grid graph
+        # add node in map graph
         x_min, y_min = self.min_lat, self.min_lon
         x_max, y_max = self.max_lat, self.max_lon
         y_minimal = y_min
@@ -119,15 +137,15 @@ class GridGraph(Graph):
             while y_max > y_min:
                 # add centered node in each 0.002*0.002 small grid
                 lon = y_min + resolution / 2
-                grid_node = self.add_grid_node(lat, lon, counter_x, counter_y)
-                self._grid_node_coordinates_to_id[(counter_x, counter_y)] = grid_node.id
-                print('added grid node : ', grid_node.id)
+                zone = self.add_zone(lat, lon, counter_x, counter_y)
+                self._zone_coordinates_to_id[(counter_x, counter_y)] = zone.id
+                print('added zone node : ', zone.id)
                 y_min += resolution
                 counter_y += 1
             y_min = y_minimal
             counter_x += 1
 
-        # ingestion of crimes into our GridNode objects
+        # ingestion of crimes into our Zone objects
         for i in range(len(crime_data)):
             crime = Crime(crime_data.iloc[i]['LATITUDE'], crime_data.iloc[i]['LONGITUDE'],
                           crime_data.iloc[i]['CATEGORIE'], crime_data.iloc[i]['QUART'],
@@ -135,26 +153,46 @@ class GridGraph(Graph):
             self.add_crime_occurrence(crime)
             print('ingested crime ', i, 'over ', len(crime_data))
 
-        # find a corresponding grid_node to all the nodes
+        # find a corresponding zone to all the nodes
         inside_montreal = set()
         for node in self._nodes.values():
-            print('finding corresponding grid_node to node ', node.id)
+            print('finding corresponding zone to node ', node.id)
             try:
-                inside_montreal.add(self.link_node_to_gridnode(node))
+                inside_montreal.add(self.link_point_to_zone(node))
             except KeyError:
                 print('ERROR:', node.lat, node.lon)
                 raise KeyError
 
-        # clean gridnodes outside montreal
-        outside_montreal = self._grid_nodes.keys() - inside_montreal
+        # clean zones outside montreal
+        outside_montreal = self._zones.keys() - inside_montreal
         for _id in outside_montreal:
             print('removing node ', _id)
-            if len(self._grid_nodes[_id].crimes):
-                print(self._grid_nodes[_id].crimes)
+            if len(self._zones[_id].crimes):
+                print(self._zones[_id].crimes)
                 #raise ValueError
-            grid_node = self._grid_nodes[_id]
-            del self._grid_node_coordinates_to_id[(grid_node.x, grid_node.y)]
-            del self._grid_nodes[_id]
+            zone = self._zones[_id]
+            del self._zone_coordinates_to_id[(zone.x, zone.y)]
+            del self._zones[_id]
+
+        for element in police_station_json:
+            lon, lat = element['geometry']['coordinates']
+            ps = Point(lat, lon)
+            try:
+                zone_id = self.link_point_to_zone(ps)
+                self._police_stations[ps.id] = ps
+                self._zones[zone_id].add_police_station()
+            except KeyError:
+                continue
+
+        for element in fire_station_json:
+            lon, lat = element['geometry']['coordinates']
+            fs = Point(lat, lon)
+            try:
+                zone_id = self.link_point_to_zone(fs)
+                self._fire_stations[fs.id] = fs
+                self._zones[zone_id].add_fire_station()
+            except KeyError:
+                continue
 
     def check_extremum(self, lat, lon):
         if lat <= self.min_lat:
@@ -166,72 +204,66 @@ class GridGraph(Graph):
         if lon >= self.max_lon:
             self.max_lon = lon
 
-    def link_node_to_gridnode(self, node: Node) -> str:
-        for grid_node in self._grid_nodes.values():
-            node_zone = grid_node.in_surrounding_zone(self.resolution, node.lat, node.lon)
+    def link_point_to_zone(self, node: Point) -> str:
+        for zone in self._zones.values():
+            node_zone = zone.in_surrounding_zone(self.resolution, node.lat, node.lon)
             if node_zone:
-                node.grid_node_id = grid_node.id
-                return grid_node.id
+                node.zone_id = zone.id
+                return zone.id
         raise KeyError
 
-    def add_grid_node(self, lat: float, lon: float, x: int, y: int) -> GridNode:
-        node = GridNode(lat, lon, x, y)
-        self._grid_nodes[node.id] = node
-        return node
+    def add_zone(self, lat: float, lon: float, x: int, y: int) -> Zone:
+        zone = Zone(lat, lon, x, y)
+        self._zones[zone.id] = zone
+        return zone
 
-    def get_grid_node_coordinates_to_id(self):
-        return cp.copy(self._grid_node_coordinates_to_id)
+    def get_zone_coordinates_to_id(self):
+        return cp.copy(self._zone_coordinates_to_id)
 
     def add_crime_occurrence(self, crime: Crime):
-        for grid_node in self._grid_nodes.values():
-            node_zone = grid_node.in_surrounding_zone(self.resolution, crime.lat, crime.lon)
+        for zone in self._zones.values():
+            node_zone = zone.in_surrounding_zone(self.resolution, crime.lat, crime.lon)
             if node_zone:
-                grid_node.add_crime_occurrence(crime)
-                break  # A crime belongs to only one Grid
+                zone.add_crime_occurrence(crime)
+                break  # A crime belongs to only one Zone
 
     @jit
     def filter(self, x, y, time_of_day, month):
         reverse_map = {1: 'jour', 2: 'soir', 3: 'nuit'}
         time_of_day = reverse_map[time_of_day]
-        node_id = self._grid_node_coordinates_to_id[(x, y)]
-        grid_node = self._grid_nodes[node_id]
-        node_prob_crimes = grid_node.filter(time_of_day, month)
-        total_crimes = grid_node.total_crimes
+        node_id = self._zone_coordinates_to_id[(x, y)]
+        zone = self._zones[node_id]
+        node_prob_crimes = zone.filter(time_of_day, month)
+        total_crimes = zone.total_crimes
 
         if not node_prob_crimes:
             return 0
         max = 0
-        for grid_node in self._grid_nodes.values():
-            crimes = grid_node.total_crimes
+        for zone in self._zones.values():
+            crimes = zone.total_crimes
             if crimes > max:
                 max = crimes
         probability = node_prob_crimes * float(total_crimes)/max if max else 0
         return probability
 
     def get_partial_input(self, node: Node):
-        grid_node = self._grid_nodes[node.grid_node_id]
-        return grid_node.x, grid_node.y, None, None
-
-    def plot(self, ax, color=None):
-        for node in self._nodes.values():
-            # node.node_plot(ax, color='b')
-            if len(node.crimes) >= 5:
-                node.node_plot(ax, color='r')
-            else:
-                node.node_plot(ax, color='g')
+        zone = self._zones[node.zone_id]
+        return zone.x, zone.y, None, None
 
     def dict_representation(self):
         return {
             "resolution": self.resolution,
-            "grid_node_coordinates_to_id": {str(k): v for k, v in self.get_grid_node_coordinates_to_id().items()},
+            "zone_coordinates_to_id": {str(k): v for k, v in self.get_zone_coordinates_to_id().items()},
             "nodes": [node.dict_representation() for node in self._nodes.values()],
-            "grid_nodes": [grid_node.dict_representation() for grid_node in self._grid_nodes.values()]
+            "zones": [zone.dict_representation() for zone in self._zones.values()],
+            "police_stations": [ps.dict_representation() for ps in self._police_stations.values()],
+            "fire_stations": [ps.dict_representation() for ps in self._fire_stations.values()]
         }
 
 
 if __name__ == '__main__':
 
-    grid_graph = GridGraph(resolution=1, minima=[-0.5, -0.5], extrema=[2.5, 2.5])
+    grid_graph = MapGraph(resolution=1, minima=[-0.5, -0.5], extrema=[2.5, 2.5])
     grid_graph.create_edges()
 
     crime = Crime(0, 1, 'Car', 'nuit', 6, 2012)
@@ -243,7 +275,7 @@ if __name__ == '__main__':
         grid_graph.add_crime_occurrence(crime)
 
     print(grid_graph.dict_representation()['nodes'])
-    int_id = grid_graph.get_coordinates_grid_node_map()
+    int_id = grid_graph.get_coordinates_zone_map()
     crime_node = grid_graph.find_closest_node(0, 2)
     for key, value in int_id.items():
         if value == crime_node.id:

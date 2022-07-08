@@ -4,15 +4,15 @@ import numpy as np
 import pandas as pd
 from uuid import uuid4
 import copy as cp
-from typing import List, Tuple
+from typing import List, Tuple, Set
 
 Coordinates = Tuple[float, float]
 
 
 class Point (object):
-    def __init__(self, lat: float, lon: float, id: str = None, grid_node_id: str = None):
+    def __init__(self, lat: float, lon: float, id: str = None, zone_id: str = None):
         self.id = str(uuid4()) if not id else id  # randomly generated string
-        self.grid_node_id = None if not grid_node_id else grid_node_id
+        self.zone_id = None if not zone_id else zone_id
         self.lat = lat
         self.lon = lon
 
@@ -31,15 +31,18 @@ class Point (object):
     def dict_representation(self):
         return {
             "id": self.id,
-            "grid_node_id": self.grid_node_id,
+            "zone_id": self.zone_id,
             "lat": self.lat,
             "lon": self.lon
         }
 
+    def __str__(self) -> str:
+        return f"id: {self.id}, latitude: {self.lat}, longitude: {self.lon}"
+
 
 class Node (Point):
-    def __init__(self, lat: float, lon: float, id: str = None, grid_node_id : str = None, neighbours: List[str] = None):
-        super(Node, self).__init__(lat, lon, id, grid_node_id)
+    def __init__(self, lat: float, lon: float, id: str = None, zone_id : str = None, neighbours: List[str] = None):
+        super(Node, self).__init__(lat, lon, id, zone_id)
         self._neighbours = set()
         if neighbours:
             self._neighbours = set(neighbours)
@@ -48,7 +51,7 @@ class Node (Point):
         if self.id != neighbour_id:
             self._neighbours.add(neighbour_id)
 
-    def get_neighbours(self) -> List[Node]:
+    def get_neighbours(self) -> Set[str]:
         return cp.copy(self._neighbours)
 
     def dict_representation(self):
@@ -57,18 +60,18 @@ class Node (Point):
             "neighbours": list(self._neighbours)
         }
 
-    def __str__(self) -> str:
-        return f"id: {self.id}, latitude: {self.lat}, longitude: {self.lon}, weight: {self.get_weight()}"
 
+class Zone (object):
 
-class GridNode (object):
-
-    def __init__(self, lat: float, lon: float, x: int, y: int, id: str = None, crimes=None):
+    def __init__(self, lat: float, lon: float, x: int, y: int, id: str = None,
+                 crimes=None, num_police_station=0, num_fire_station=0):
         self.id = str(uuid4()) if not id else id  # randomly generated string
         self.lat = lat
         self.lon = lon
         self.x = x
         self.y = y
+        self.num_police_station = num_police_station
+        self.num_fire_station = num_fire_station
         self.crimes = []
         self.crimes_df = None
         self.total_crimes = 0
@@ -100,12 +103,6 @@ class GridNode (object):
         return (lat >= self.lat - step and lat <= self.lat + step and
                 lon >= self.lon - step and lon <= self.lon + step)
 
-    def get_weight(self):
-        # if not self._weight:
-        #     for crime in self.crimes:
-        #         self._weight += crime.get_weight()
-        return len(self.crimes)
-
     def add_crime_occurrence(self, crime: Crime):
         self.crimes.append(crime.simplified_representation())
 
@@ -120,26 +117,29 @@ class GridNode (object):
             raise e
         return prob_crime
 
-    def node_plot(self, ax, color=None):
-        if not color:
-            color = 'b'
-        ax.plot((self.lon), (self.lat), 'o', markersize=1, color=color)
+    def add_police_station(self):
+        self.num_police_station += 1
+
+    def add_fire_station(self):
+        self.num_fire_station += 1
 
     def dict_representation(self):
         return {
-            "grid_node_id": self.id,
+            "zone_id": self.id,
             "lat": self.lat,
             "lon": self.lon,
             "x": self.x,
             "y": self.y,
+            "num_police_station": self.num_police_station,
+            "num_fire_station": self.num_fire_station,
             "crimes": self.crimes
         }
 
 
 if __name__ == "__main__":
-    a = GridNode(-73.62677804694519, 45.567779812980355)
-    b = GridNode(-73.62677804694519, 45.56777981298)
-    c = GridNode(-73, 43)
+    a = Zone(-73.62677804694519, 45.567779812980355)
+    b = Zone(-73.62677804694519, 45.56777981298)
+    c = Zone(-73, 43)
     print(a.distance_node(b))
     a.add_neighbour(b.id)
     a.add_neighbour(c.id)
@@ -148,12 +148,3 @@ if __name__ == "__main__":
     a.add_crime_occurrence(crime)
     a.add_crime_occurrence(Crime(-73, 45, '2', 'night', 3, 2020))
     print(a.dict_representation())
-
-    #print(a.get_neighbours())
-    #print(a.in_surrounding_zone(0.02, -73.62677804694519, 45.56677981298))
-    #fig = plt.figure()
-    #ax = fig.add_subplot()
-    #ax.autoscale(True)
-    #a.node_plot(ax)
-    #plt.show()
-
