@@ -220,6 +220,12 @@ class MapGraph(Graph):
     def get_zone_coordinates_to_id(self):
         return cp.copy(self._zone_coordinates_to_id)
 
+    def get_police_stations_coordinates(self):
+        return [ps.get_coordinates() for ps in self._police_stations.values()]
+
+    def get_fire_stations_coordinates(self):
+        return [fs.get_coordinates() for fs in self._fire_stations.values()]
+
     def add_crime_occurrence(self, crime: Crime):
         for zone in self._zones.values():
             node_zone = zone.in_surrounding_zone(self.resolution, crime.lat, crime.lon)

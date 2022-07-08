@@ -36,11 +36,15 @@ def preprocess_graph(path = '../../data/preprocessed_grid_graph.json'):
     resolution = 0.002
 
     roads = json.load(open('../../data/geojson_roads.json', 'r'))['features']
+    police_station_json = json.load(open('../../data/police-station.json', 'r'))['features']
+    fire_station_json = json.load(open('../../data/fire-station.json', 'r'))['features']
 
     grid_graph = graph.MapGraph(
         resolution=resolution,
         crime_data=crime_data,
-        roads=roads
+        roads=roads,
+        police_station_json=police_station_json,
+        fire_station_json=fire_station_json
     )
 
     with open(path, 'w') as file:

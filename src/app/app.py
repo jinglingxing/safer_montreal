@@ -14,6 +14,14 @@ button = html.Div([
         dbc.Button("Reset", id="reset_val", className="me-2", n_clicks=0)
     ])
 
+ps_button = html.Div([
+        dbc.Button("Police Stations", id="ps_button_val", className="me-2", n_clicks=0)
+    ])
+
+fs_button = html.Div([
+        dbc.Button("Fire Stations", id="fs_button_val", className="me-2", n_clicks=0)
+    ])
+
 app.layout = dbc.Container(
     [
         html.H1("Safer Montreal"),
@@ -26,12 +34,14 @@ app.layout = dbc.Container(
                                children=[
                                    dl.TileLayer(),
                                    dl.LayerGroup(id="layer"),
+                                   dl.LayerGroup(id="police_layer"),
+                                   dl.LayerGroup(id="fire_layer"),
                                    dl.LayerGroup(id="path_layer")
                                ]
                                ), md=8),
                 dbc.Col(
                     dbc.Row([
-                        button
+                        button, ps_button, fs_button
                     ]),
                     md=4)
             ],
@@ -67,6 +77,18 @@ icon_dep = {
 
 icon_dest = {
     "iconUrl": 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+    "shadowUrl": 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-black.png',
+    **icon_core
+}
+
+icon_ps = {
+    "iconUrl": 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+    "shadowUrl": 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-black.png',
+    **icon_core
+}
+
+icon_fs = {
+    "iconUrl": 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
     "shadowUrl": 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-black.png',
     **icon_core
 }
@@ -110,7 +132,7 @@ def click_coord(click_lat_lng, departure, destination):
 def reset_button(_):
     return None
 
-graph = load_or_process_graph('../../data/preprocessed_grid_graph.json')
+graph = load_or_process_graph('../../data/preprocessed_map_graph.json')
 model = Model('../../notebooks/decision_tree_model.pkl',
               '../../notebooks/best_nn.h5',
               '../../notebooks/DT_MinMaxScaler.pkl',
@@ -126,6 +148,27 @@ def display_path(departure, destination):
         return plot_path([])
     return plot_path(a_star.get_path(departure, destination))
 
+@app.callback(Output(component_id='police_layer', component_property='children'),
+            [Input(component_id='ps_button_val', component_property='n_clicks')])
+def police_stations(n):
+    res = []
+    if n % 2 != 0:
+        res = [dl.Marker(position=ps,
+                           icon=icon_ps,
+                           children=dl.Tooltip("Police Station: ({:.3f}, {:.3f})".format(*ps)))
+               for ps in graph.get_police_stations_coordinates()]
+    return res
+
+@app.callback(Output(component_id='fire_layer', component_property='children'),
+            [Input(component_id='fs_button_val', component_property='n_clicks')])
+def fire_stations(n):
+    res = []
+    if n % 2 != 0:
+        res = [dl.Marker(position=fs,
+                           icon=icon_fs,
+                           children=dl.Tooltip("Fire Station: ({:.3f}, {:.3f})".format(*fs)))
+               for fs in graph.get_fire_stations_coordinates()]
+    return res
 
 if __name__ == "__main__":
     app.run_server(port='8053', debug=True, use_reloader=False)
