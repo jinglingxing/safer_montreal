@@ -1,1 +1,1 @@
-web: python src/models/app.py runserver 0.0.0.0:5000
+web: python3 src.models.app runserver 0.0.0.0:5000

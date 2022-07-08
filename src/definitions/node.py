@@ -1,17 +1,16 @@
 from __future__ import annotations
-from plotable import Plotable
-from crime import Crime
+from src.definitions.crime import Crime
 import numpy as np
 import pandas as pd
 from uuid import uuid4
 import copy as cp
 from typing import List, Tuple
-import matplotlib.pyplot as plt
+
 
 Coordinates = Tuple[float, float]
 
 
-class Node (Plotable):
+class Node (object):
     def __init__(self, lat: float, lon: float, id: str = None, grid_node_id : str = None, neighbours: List[str] = None):
         self.id = str(uuid4()) if not id else id  # randomly generated string
         self.grid_node_id = None if not grid_node_id else grid_node_id
@@ -53,7 +52,7 @@ class Node (Plotable):
         return f"id: {self.id}, latitude: {self.lat}, longitude: {self.lon}, weight: {self.get_weight()}"
 
 
-class GridNode (Plotable):
+class GridNode (object):
 
     def __init__(self, lat: float, lon: float, x: int, y: int, id: str = None, crimes=None):
         self.id = str(uuid4()) if not id else id  # randomly generated string
