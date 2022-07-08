@@ -1,15 +1,12 @@
 import dash
-import json
 import dash_bootstrap_components as dbc
-import pandas as pd
-import plotly.graph_objs as go
 from dash import Input, Output, dcc, html
 import dash_leaflet as dl
 from typing import List, Tuple
 
 from src.algorithm.a_star import AStar
 from src.algorithm.model import Model
-from src.models.preprocessing_graph import load_or_process_graph
+from src.features.preprocessing_graph import load_or_process_graph
 
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP], prevent_initial_callbacks=True)
 

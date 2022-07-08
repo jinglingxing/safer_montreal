@@ -15,12 +15,5 @@ if __name__ == "__main__":
     data = pd.read_csv(input_data_path, sep=',', encoding='latin-1', index_col=[0])
 
 
-    # fig = plt.figure()
-    # ax = fig.add_subplot()
-    # ax.autoscale(True)
-    # grid_graph.plot(ax)
-    # plt.show()
-
-
 
 

@@ -1,37 +1,48 @@
 from __future__ import annotations
-from plotable import Plotable
 from crime import Crime
 import numpy as np
 import pandas as pd
 from uuid import uuid4
 import copy as cp
 from typing import List, Tuple
-import matplotlib.pyplot as plt
 
 Coordinates = Tuple[float, float]
 
 
-class Node (Plotable):
-    def __init__(self, lat: float, lon: float, id: str = None, grid_node_id : str = None, neighbours: List[str] = None):
+class Point (object):
+    def __init__(self, lat: float, lon: float, id: str = None, grid_node_id: str = None):
         self.id = str(uuid4()) if not id else id  # randomly generated string
         self.grid_node_id = None if not grid_node_id else grid_node_id
         self.lat = lat
         self.lon = lon
-        self._neighbours = set()
-        if neighbours:
-            self._neighbours = set(neighbours)
 
     def get_coordinates(self):
         """
         Obtain the coordinates of the Node to display it on the map
         """
-        return (self.lat, self.lon)
+        return self.lat, self.lon
 
     def distance(self, lat: float, lon: float) -> float:
         return np.sqrt((self.lat - lat)**2 + (self.lon - lon)**2)
 
     def distance_node(self, other: Node) -> float:
         return self.distance(other.lat, other.lon)
+
+    def dict_representation(self):
+        return {
+            "id": self.id,
+            "grid_node_id": self.grid_node_id,
+            "lat": self.lat,
+            "lon": self.lon
+        }
+
+
+class Node (Point):
+    def __init__(self, lat: float, lon: float, id: str = None, grid_node_id : str = None, neighbours: List[str] = None):
+        super(Node, self).__init__(lat, lon, id, grid_node_id)
+        self._neighbours = set()
+        if neighbours:
+            self._neighbours = set(neighbours)
 
     def add_neighbour(self, neighbour_id: str):
         if self.id != neighbour_id:
@@ -42,10 +53,7 @@ class Node (Plotable):
 
     def dict_representation(self):
         return {
-            "id": self.id,
-            "grid_node_id": self.grid_node_id,
-            "lat": self.lat,
-            "lon": self.lon,
+            **super(Node, self).dict_representation(),
             "neighbours": list(self._neighbours)
         }
 
@@ -53,7 +61,7 @@ class Node (Plotable):
         return f"id: {self.id}, latitude: {self.lat}, longitude: {self.lon}, weight: {self.get_weight()}"
 
 
-class GridNode (Plotable):
+class GridNode (object):
 
     def __init__(self, lat: float, lon: float, x: int, y: int, id: str = None, crimes=None):
         self.id = str(uuid4()) if not id else id  # randomly generated string

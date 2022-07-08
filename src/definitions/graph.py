@@ -1,4 +1,3 @@
-from plotable import Plotable
 from crime import Crime
 from node import Node, GridNode, Coordinates
 import copy as cp
@@ -7,7 +6,7 @@ from numba import jit
 import pandas as pd
 
 
-class Graph(Plotable):
+class Graph(object):
 
     def __init__(self):
         self._nodes: Dict[str, Node] = dict()
@@ -81,24 +80,12 @@ class GridGraph(Graph):
         # normal initialization, with all the preprocessing
         self.resolution = resolution
 
-        # add cross-roads
-        # for element in cross_roads:
-        #     lon, lat = element['geometry']['coordinates']
-        #     node = self.add_node(lat, lon)
-        #     inside_montreal.add(self.link_node_to_gridnode(node))
-        #     print('added node ', node.id)
-
         # manage cross-roads and edges
         self.min_lat = self.min_lon = 10000
         self.max_lat = self.max_lon = -10000
         for element in roads:
             print('processing road ', element['properties']['NOM_VOIE'])
             coordinates = element['geometry']['coordinates']
-            # nodes = [self.add_node(lat, lon) for lon, lat in coordinates]
-            # for i in range(len(nodes)):
-            #     inside_montreal.add(self.link_node_to_gridnode(nodes[i]))
-            #     if i < len(nodes)-1:
-            #         self.add_neighbour(nodes[i], nodes[i+1])
             lon_start, lat_start = coordinates[0]
             lon_end, lat_end = coordinates[-1]
             node_start = self.find_node(lat_start, lon_start)
@@ -243,15 +230,6 @@ class GridGraph(Graph):
 
 
 if __name__ == '__main__':
-    # import json
-    #
-    # with open('../../data/preprocessed_graph.json', 'r') as f:
-    #     json_obj = json.load(f)
-    #     g = GridGraph(json=json_obj)
-    #
-    # with open('../../data/preprocessed_graph.json', 'w') as f:
-    #     f.write(json.dumps(json.loads(str(g.dict_representation()).replace("\'", "\"")), indent=4,
-    #                        sort_keys=False))
 
     grid_graph = GridGraph(resolution=1, minima=[-0.5, -0.5], extrema=[2.5, 2.5])
     grid_graph.create_edges()
