@@ -1,4 +1,4 @@
-absl-py==1.1.0
+bsl-py==1.1.0
 astunparse==1.6.3
 Brotli==1.0.9
 cachetools==5.2.0
