@@ -1,7 +1,4 @@
-import sys
-sys.path.append('../')
-sys.path.append('../definitions/')
-from node import Node
+from src.definitions.node import Node
 from typing import List, Set, Dict, Tuple
 
 

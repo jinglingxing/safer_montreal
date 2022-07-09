@@ -1,0 +1,11 @@
+/images
+/data/fire-station.json
+/data/police-station.json
+/data/geojson_roads.json
+/data/grid_node_data.csv
+/data/grid_target.csv
+/data/zone_data.csv
+/data/interventionscitoyendo.csv
+/notebooks/1.0-initial-data-exploration.ippynb
+/notebooks/1.1-model-selection.ippynb
+/notebooks/1.2-decision_tree_neural_network.ippynb

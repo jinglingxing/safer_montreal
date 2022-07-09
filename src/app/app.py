@@ -132,12 +132,12 @@ def click_coord(click_lat_lng, departure, destination):
 def reset_button(_):
     return None
 
-graph = load_or_process_graph('../../data/preprocessed_map_graph.json')
-model = Model('../../notebooks/decision_tree_model.pkl',
-              '../../notebooks/best_nn.h5',
-              '../../notebooks/DT_MinMaxScaler.pkl',
-              '../../notebooks/NN_MinMaxScaler.pkl',
-              '../../notebooks/OneHotEncodingScaler.pkl')
+graph = load_or_process_graph('data/preprocessed_map_graph.json')
+model = Model('notebooks/decision_tree_model.pkl',
+              'notebooks/best_nn.h5',
+              'notebooks/DT_MinMaxScaler.pkl',
+              'notebooks/NN_MinMaxScaler.pkl',
+              'notebooks/OneHotEncodingScaler.pkl')
 a_star = AStar(graph, model)
 
 @app.callback(Output(component_id='path_layer', component_property='children'),

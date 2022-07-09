@@ -1,5 +1,5 @@
 from __future__ import annotations
-from crime import Crime
+from src.definitions.crime import Crime
 import numpy as np
 import pandas as pd
 from uuid import uuid4

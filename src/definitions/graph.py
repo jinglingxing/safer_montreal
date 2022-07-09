@@ -1,5 +1,5 @@
-from crime import Crime
-from node import Node, Zone, Coordinates, Point
+from src.definitions.crime import Crime
+from src.definitions.node import Node, Zone, Coordinates, Point
 import copy as cp
 from typing import List, Dict, Tuple
 from numba import jit

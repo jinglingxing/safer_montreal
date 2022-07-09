@@ -1,10 +1,7 @@
 import pandas as pd
 from datetime import datetime
-import sys
 import os
-sys.path.append('../')
-sys.path.append('../definitions/')
-import graph
+import src.definitions.graph as graph
 import json
 
 

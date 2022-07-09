@@ -1,0 +1,1 @@
+web: python3 -m src.app.app runserver 0.0.0.0:5000
