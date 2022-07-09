@@ -1,0 +1,1 @@
+web: python3 src.models.app runserver 0.0.0.0:5000
