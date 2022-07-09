@@ -1,12 +1,13 @@
-from src.definitions.crime import Crime
-from src.definitions.node import Node, GridNode, Coordinates
+from plotable import Plotable
+from crime import Crime
+from node import Node, GridNode, Coordinates
 import copy as cp
 from typing import List, Dict, Tuple
 from numba import jit
 import pandas as pd
 
 
-class Graph(object):
+class Graph(Plotable):
 
     def __init__(self):
         self._nodes: Dict[str, Node] = dict()
