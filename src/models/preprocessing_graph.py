@@ -2,7 +2,9 @@ import pandas as pd
 from datetime import datetime
 import sys
 import os
-from src.definitions import graph
+sys.path.append('../')
+sys.path.append('../definitions/')
+import graph
 import json
 
 

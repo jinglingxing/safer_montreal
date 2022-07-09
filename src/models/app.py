@@ -1,5 +1,8 @@
 import dash
+import json
 import dash_bootstrap_components as dbc
+import pandas as pd
+import plotly.graph_objs as go
 from dash import Input, Output, dcc, html
 import dash_leaflet as dl
 from typing import List, Tuple
@@ -8,12 +11,7 @@ from src.algorithm.a_star import AStar
 from src.algorithm.model import Model
 from src.models.preprocessing_graph import load_or_process_graph
 
-from whitenoise import WhiteNoise
-
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP], prevent_initial_callbacks=True)
-server = app.server
-server.wsgi_app = WhiteNoise(server.wsgi_app, root='static/')
-
 
 button = html.Div([
         dbc.Button("Reset", id="reset_val", className="me-2", n_clicks=0)
@@ -115,12 +113,12 @@ def click_coord(click_lat_lng, departure, destination):
 def reset_button(_):
     return None
 
-graph = load_or_process_graph('data/preprocessed_grid_graph.json')
-model = Model('notebooks/decision_tree_model.pkl',
-              'notebooks/best_nn.h5',
-              'notebooks/DT_MinMaxScaler.pkl',
-              'notebooks/NN_MinMaxScaler.pkl',
-              'notebooks/OneHotEncodingScaler.pkl')
+graph = load_or_process_graph('../../data/preprocessed_grid_graph.json')
+model = Model('../../notebooks/decision_tree_model.pkl',
+              '../../notebooks/best_nn.h5',
+              '../../notebooks/DT_MinMaxScaler.pkl',
+              '../../notebooks/NN_MinMaxScaler.pkl',
+              '../../notebooks/OneHotEncodingScaler.pkl')
 a_star = AStar(graph, model)
 
 @app.callback(Output(component_id='path_layer', component_property='children'),
