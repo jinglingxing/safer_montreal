@@ -36,14 +36,12 @@ def filter(thread_index, df, graph, y):
             print(i)
         probability = graph.filter(df.iloc[i]['x'], df.iloc[i]['y'], df.iloc[i]['time_of_day'],
                                    df.iloc[i]['month_of_year'])
-        # if thread_index == 0:
-        #     print(probability)
         y.append(probability)
 
 
 if __name__ == '__main__':
     import sys
-    sys.path.append('../models')
+    sys.path.append('../app')
     from preprocessing_graph import load_or_process_graph
 
     graph = load_or_process_graph(path='../../data/preprocessed_grid_graph.json')
