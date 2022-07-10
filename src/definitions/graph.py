@@ -64,15 +64,15 @@ class MapGraph(Graph):
         if json:
             self.resolution = json['resolution']
             print('### processing nodes')
-            total_nodes = len(json['nodes'])
+            # total_nodes = len(json['nodes'])
             for index, element in enumerate(json['nodes']):
-                print('processing node number ', index, 'over ', total_nodes)
+                # print('processing node number ', index, 'over ', total_nodes)
                 self._nodes[element['id']] = Node(element['lat'], element['lon'],
                                                   element['id'], element['zone_id'], element['neighbours'])
             print('### processing zones')
-            total_zones = len(json['zones'])
+            # total_zones = len(json['zones'])
             for index, element in enumerate(json['zones']):
-                print('processing zone number ', index, 'over ', total_zones)
+                # print('processing zone number ', index, 'over ', total_zones)
                 self._zones[element['zone_id']] = Zone(element['lat'], element['lon'],
                                                      element['x'], element['y'],
                                                      element['zone_id'], element['crimes'],
@@ -80,16 +80,16 @@ class MapGraph(Graph):
             self._zone_coordinates_to_id = {eval(k): v for k, v in json['zone_coordinates_to_id'].items()}
 
             print('### processing police stations')
-            total_police_stations = len(json['police_stations'])
+            # total_police_stations = len(json['police_stations'])
             for index, element in enumerate(json['police_stations']):
-                print('processing police station', index, 'over', total_police_stations)
+                # print('processing police station', index, 'over', total_police_stations)
                 self._police_stations[element['id']] = Point(element['lat'], element['lon'], element['id'],
                                                              element['zone_id'])
 
             print('### processing fire stations')
-            total_police_stations = len(json['fire_stations'])
+            # total_police_stations = len(json['fire_stations'])
             for index, element in enumerate(json['fire_stations']):
-                print('processing fire station', index, 'over', total_police_stations)
+                # print('processing fire station', index, 'over', total_police_stations)
                 self._fire_stations[element['id']] = Point(element['lat'], element['lon'], element['id'],
                                                            element['zone_id'])
             return
