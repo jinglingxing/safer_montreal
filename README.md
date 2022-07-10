@@ -91,6 +91,11 @@ pip3 install ___
 pip3 freeze > requirements.txt
 ```
 
+- clean cached data in docker
+```commandline
+docker buildx prune 
+```
+
 #### CopyRights
 
 All rights are reserved by Jinling Xing and Luc Michea, no commercial usage.

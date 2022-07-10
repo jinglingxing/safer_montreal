@@ -80,7 +80,6 @@ class Zone (object):
         self._neighbours = set()
         if crimes is not None:
             self.crimes = crimes
-            self.init_crimes_df()
 
     def init_crimes_df(self):
         self.crimes_df = pd.DataFrame(self.crimes, columns=['type_of_crime', 'time_of_day', 'month', 'year'])

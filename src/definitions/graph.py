@@ -2,7 +2,6 @@ from src.definitions.crime import Crime
 from src.definitions.node import Node, Zone, Coordinates, Point
 import copy as cp
 from typing import List, Dict, Tuple
-from numba import jit
 import pandas as pd
 
 
@@ -233,7 +232,6 @@ class MapGraph(Graph):
                 zone.add_crime_occurrence(crime)
                 break  # A crime belongs to only one Zone
 
-    @jit
     def filter(self, x, y, time_of_day, month):
         reverse_map = {1: 'jour', 2: 'soir', 3: 'nuit'}
         time_of_day = reverse_map[time_of_day]

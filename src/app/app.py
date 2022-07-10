@@ -9,6 +9,7 @@ from src.algorithm.model import Model
 from src.features.preprocessing_graph import load_or_process_graph
 
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP], prevent_initial_callbacks=True)
+server = app.server
 
 button = html.Div([
         dbc.Button("Reset", id="reset_val", className="me-2", n_clicks=0)
@@ -132,12 +133,12 @@ def click_coord(click_lat_lng, departure, destination):
 def reset_button(_):
     return None
 
-graph = load_or_process_graph('data/preprocessed_map_graph.json')
-model = Model('notebooks/decision_tree_model.pkl',
-              'notebooks/best_nn.h5',
-              'notebooks/DT_MinMaxScaler.pkl',
-              'notebooks/NN_MinMaxScaler.pkl',
-              'notebooks/OneHotEncodingScaler.pkl')
+graph = load_or_process_graph('model/preprocessed_map_graph.json')
+model = Model('model/decision_tree_model.pkl',
+              'model/best_nn.h5',
+              'model/DT_MinMaxScaler.pkl',
+              'model/NN_MinMaxScaler.pkl',
+              'model/OneHotEncodingScaler.pkl')
 a_star = AStar(graph, model)
 
 @app.callback(Output(component_id='path_layer', component_property='children'),
@@ -169,6 +170,9 @@ def fire_stations(n):
                            children=dl.Tooltip("Fire Station: ({:.3f}, {:.3f})".format(*fs)))
                for fs in graph.get_fire_stations_coordinates()]
     return res
+
+
+print("app is running")
 
 if __name__ == "__main__":
     app.run_server(port='8053', debug=True, use_reloader=False)
