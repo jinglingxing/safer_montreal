@@ -5,6 +5,8 @@
 
 This project is used to find the shortest and safest path possible on the island of Montreal. To do so, we are offering our users a Website in which they can select a starting and endpoint. The shortest path will be found by a weighted A* Heuristic Search algorithm. With weights representing the probability of a crime to happen as well as some user input. The feeling of being safe being something unquantifiable, we decided to use a Machine Learning algorithm to estimate the weights. This Machine Learning Algorithm is at first using the input from past crimes that happened on the island to predict a likelyhood that a crime happens again. We will then be requiring the users input to improve the feeling of safety of our users with their feedback.
 
+We deployed our app on Heroku, here is the website of this app: https://safer-montreal-app.herokuapp.com/
+
 **Disclaimer**: This project is made to improve the life of Montreal citizens. However, we are not responsible for your safety when you are using this app.
 
 If you represent the probability of a crime to happen in terms of elevation, avoiding crimes would be like finding a path that reduces the amount of elevation gain:
@@ -54,17 +56,39 @@ The user can always update the `Destination` by clicking once again on the map. 
 ## Other Information
 
 #### Project organization
-- `README.md`: The top-level README for developers using this project.
-- `data`: Public data gathered from [Montreal - Jeux de Donnees](https://donnees.montreal.ca/) a website where you can find a lot of public data about the city. From this website we found crimes data as well as some useful Geojson describing the city.
-- `algorithm`: The principle algorithms that will be used by our program.
-- `definitions`: Basic Classes definitions of our objects.
-- `exploration`: Some of the exploration that was done to understand the data we are working with. (geojson)
-- `features`: Used to generate the data necessary to train our model
-- `data_process`: Process data to have more features and create a map with `0.002*0.002` size of grids    
-- `models`: Scripts to train models and then use trained models to make predictions 
-- `notebooks`: Jupyter notebooks. Naming convention is a number (for ordering), the creator's initials, and a short - delimited description, e.g. 1.0-jqp-initial-data-exploration.
-- `requirements.txt`: The requirements file for reproducing the analysis environment
-- `visualization`: Scripts to create exploratory and results oriented visualizations
+```bash
+├── data                    # Public data gathered from [Montreal - Jeux de Donnees]
+├── images                  # Buttons and example graphs for the path finder
+├── notebooks               # Jupyter notebooks. Naming convention is a number (for ordering), the creator's initials, and a short - delimited description, e.g. 1.0-jqp-initial-data-exploration.
+├── src
+│   ├── algorithms          # The principle algorithms that will be used by our program.
+│   │   ├── a_star.py
+│   │   ├── model.py
+│   ├── app
+│   │   ├── app.py
+│   │   ├── preprocess_data.py
+│   ├── definations         # Basic Classes definitions of our objects.
+│   │   ├── crime.py
+│   │   ├── graph.py
+│   │   ├── node.py
+│   ├── exploration         # Some of the exploration that was done to understand the data we are working with. (geojson)
+│   ├── features            # Used to generate the data necessary to train our model
+│   │   ├── node_data.py
+│   │   ├── preprocessing_graph.py
+│   │   ├── target.py
+├── model                   # Saved Decision tree and NN models and the corresponding scalers
+│   ├── DT_MinMaxScaler.pkl
+│   ├── NN_MinMaxScaler.pkl
+│   ├── OneHotEncodingScaler.pkl
+│   ├── best_nn.h5          # Best neural network model from grid search
+│   ├── preprocessed_map_graph.json
+├── Dockerfile              
+├── Procfile          
+├── .gitignore     
+├── .slugignore          
+├── requirements.txt
+└── README.md               # The top-level README for developers using this project.
+```
 
 #### How to use venv
 
