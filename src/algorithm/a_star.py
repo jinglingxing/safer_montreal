@@ -1,7 +1,4 @@
-import sys
-sys.path.append('../')
-sys.path.append('../definitions/')
-from node import Node
+from src.definitions.node import Node
 from typing import List, Set, Dict, Tuple
 
 
@@ -43,6 +40,16 @@ class AStar:
             end_node = pre_node
         return path[::-1]
 
+    def get_crime_probability(self, node: Node, prob_memory: Dict[str, float]) -> float:
+        if node.zone_id not in prob_memory:
+            # we obtain the partial input of our model for our neighbour
+            partial_input = self.graph.get_partial_input(node)
+            # we get the probability
+            prob_memory[node.zone_id] = self.model.get_probability(partial_input)
+
+        return prob_memory[node.zone_id]
+
+
     def find_path(self, start_node: Node, end_node: Node) -> List[Node]:
         # list of nodes we should visit using a set
         open_set = set()
@@ -52,6 +59,7 @@ class AStar:
         came_from = {}
 
         # cost to arrive at the current node from starting node
+        prob_memory = {}
         g_score = {}
         g_score[start_node] = 0
 
@@ -75,10 +83,8 @@ class AStar:
             neighbors = curr_node.get_neighbours()
             for nei_id in neighbors:
                 nei = self.graph.get_node(nei_id)
-                # we obtain the partial input of our model for our neighbour
-                partial_input = self.graph.get_partial_input(nei)
                 # d(current,neighbor) is the probability of having a crime in the neighbor node
-                d_score = self.model.get_probability(partial_input)
+                d_score = self.get_crime_probability(nei, prob_memory)
                 # tentative_gScore is the distance from start to the neighbor through current
                 tentative_g_score = g_score[curr_node] + d_score
                 if nei not in g_score or tentative_g_score < g_score[nei]:

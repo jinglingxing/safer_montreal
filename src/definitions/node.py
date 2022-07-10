@@ -1,5 +1,5 @@
 from __future__ import annotations
-from crime import Crime
+from src.definitions.crime import Crime
 import numpy as np
 import pandas as pd
 from uuid import uuid4
@@ -80,7 +80,6 @@ class Zone (object):
         self._neighbours = set()
         if crimes is not None:
             self.crimes = crimes
-            self.init_crimes_df()
 
     def init_crimes_df(self):
         self.crimes_df = pd.DataFrame(self.crimes, columns=['type_of_crime', 'time_of_day', 'month', 'year'])

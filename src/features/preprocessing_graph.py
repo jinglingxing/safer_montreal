@@ -1,10 +1,7 @@
 import pandas as pd
 from datetime import datetime
-import sys
 import os
-sys.path.append('../')
-sys.path.append('../definitions/')
-import graph
+import src.definitions.graph as graph
 import json
 
 
@@ -65,7 +62,7 @@ if __name__ == "__main__":
     # preprocess_graph('../../data/preprocessed_grid_graph.json')
 
 
-    gg = load_or_process_graph('../../data/preprocessed_map_graph.json')
+    gg = load_or_process_graph('../../model/preprocessed_map_graph.json')
     # gg.process_station(json.load(open('../../data/police-station.json', 'r'))['features'], "police_stations")
     # gg.process_station(json.load(open('../../data/fire-station.json', 'r'))['features'], "fire_stations")
     # with open('../../data/preprocessed_map_graph.json', 'w') as file:
