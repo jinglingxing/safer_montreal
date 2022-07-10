@@ -1,1 +1,1 @@
-web: python3 -m src.app.app runserver 0.0.0.0:5000
+web: gunicorn src.app.app:server -b:8000 --timeout 120
