@@ -1,5 +1,6 @@
 from src.definitions.node import Node
 from typing import List, Set, Dict, Tuple
+import time
 
 
 class AStar:
@@ -47,7 +48,9 @@ class AStar:
             # we get the probability
             prob_memory[node.zone_id] = self.model.get_probability(partial_input)
 
-        return prob_memory[node.zone_id]
+        return prob_memory[node.zone_id] * 0.1  # balance weight of crimes and distance to find a path faster
+                                                # (weight is still really important as applied for each crossroads
+                                                # compared to low distance (latitude and longitude) )
 
 
     def find_path(self, start_node: Node, end_node: Node) -> List[Node]:
@@ -99,12 +102,14 @@ class AStar:
         return None
 
     def get_path(self, departure: Tuple[float, float], destination: Tuple[float, float]) -> List[Tuple[float, float]]:
+        start_time = time.time()
         dep_lat, dep_lon = departure
         dest_lat, dest_lon = destination
         start_node = self.graph.find_closest_node(dep_lat, dep_lon)
         end_node = self.graph.find_closest_node(dest_lat, dest_lon)
         path = self.find_path(start_node, end_node)
-
+        end_time = time.time()
+        print(f"it took {end_time - start_time} seconds to find the safest path")
         return [departure] + [node.get_coordinates() for node in path] + [destination]
 
 
