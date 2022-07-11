@@ -39,3 +39,5 @@ typing_extensions==4.3.0
 Werkzeug==2.1.2
 wrapt==1.14.1
 zipp==3.8.0
+github/safer_montreal/src
+github/safer_montreal/model
