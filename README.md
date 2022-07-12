@@ -65,7 +65,7 @@ The user can always update the `Destination` by clicking once again on the map. 
 │   │   ├── a_star.py
 │   │   ├── model.py
 │   ├── app
-│   │   ├── app.py
+│   │   ├── application.py
 │   │   ├── preprocess_data.py
 │   ├── definations         # Basic Classes definitions of our objects.
 │   │   ├── crime.py

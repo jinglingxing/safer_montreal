@@ -11,3 +11,8 @@ notebooks/.ipynb_checkpoints
 .idea/
 notes
 *.pyc
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

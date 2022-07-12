@@ -9,7 +9,7 @@ from src.algorithm.model import Model
 from src.features.preprocessing_graph import load_or_process_graph
 
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP], prevent_initial_callbacks=True)
-server = app.server
+application = app.server
 
 button = html.Div([
         dbc.Button("Reset", id="reset_val", className="me-2", n_clicks=0)
@@ -175,4 +175,5 @@ def fire_stations(n):
 print("app is running")
 
 if __name__ == "__main__":
-    app.run_server(port='8053', debug=True, use_reloader=False)
+    app.run_server(port='8053', debug=False, use_reloader=False)
+    # app.run_server(port='8053', debug=True, use_reloader=False)
