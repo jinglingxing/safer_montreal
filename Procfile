@@ -1,1 +1,0 @@
-web: gunicorn src.app.app:server -b:8000 --timeout 120

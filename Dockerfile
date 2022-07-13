@@ -16,5 +16,6 @@ COPY /model/ /usr/model/
 RUN useradd -m appUser
 USER appUser
 
+EXPOSE 8080
 # Run locally
-CMD gunicorn src.app.app:server -b:8000 --timeout 120
+CMD gunicorn src.app.application:application -b:8080 --timeout 120
