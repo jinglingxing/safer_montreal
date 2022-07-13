@@ -5,7 +5,7 @@
 
 This project is used to find the shortest and safest path possible on the island of Montreal. To do so, we are offering our users a Website in which they can select a starting and endpoint. The shortest path will be found by a weighted A* Heuristic Search algorithm. With weights representing the probability of a crime to happen as well as some user input. The feeling of being safe being something unquantifiable, we decided to use a Machine Learning algorithm to estimate the weights. This Machine Learning Algorithm is at first using the input from past crimes that happened on the island to predict a likelyhood that a crime happens again. We will then be requiring the users input to improve the feeling of safety of our users with their feedback.
 
-We deployed our app on Heroku, here is the website of this app: https://safer-montreal-app.herokuapp.com/
+We deployed our app on AWS, here is the website of this app: http://safer-montreal-dev.us-east-1.elasticbeanstalk.com/
 
 **Disclaimer**: This project is made to improve the life of Montreal citizens. However, we are not responsible for your safety when you are using this app.
 
