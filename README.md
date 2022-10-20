@@ -13,7 +13,9 @@ If you represent the probability of a crime to happen in terms of elevation, avo
 
 ![Crime Elevation](images/Crime_Elevation.png)
 
- 
+### UML
+
+![UML](images/safer_montreal_uml.png)
 
 ## Explanations
 
